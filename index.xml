@@ -1,0 +1,21 @@
+<Application>
+	<Head>
+		<meta name="id" value="chess"/>
+		<meta name="title" value="Chess" version="1.0"/>
+		<meta name="author" value="Hakan Bilgin" namespace="ant"/>
+		<meta name="license" value="AGPL-3.0"/>
+		<meta name="width" value="700"/>
+		<meta name="height" value="700"/>
+		<meta name="top" value="120"/>
+		<meta name="left" value="120"/>
+		<meta name="minimize"/>
+		<meta name="maximize"/>
+		<meta name="resize"/>
+		<meta name="script" value="src/js/main.js"/>
+		<meta name="style" value="src/css/main.less"/>
+		<meta name="content" value="src/partials/content.htm"/>
+		<meta name="icons" value="src/svg/icons.svg"/>
+
+		@import "src/partials/menubar.xml"
+	</Head>
+</Application>

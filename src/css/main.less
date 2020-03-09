@@ -1,0 +1,36 @@
+
+content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+
+	.board {
+		background: url(~/icons/board.png);
+		width: 620px;
+		height: 620px;
+		font-size: 0;
+	}
+
+	piece {
+		display: inline-block;
+		position: relative;
+		width: 12.5%;
+		height: 12.5%;
+
+		&.black-rook { background-image: url(~/icons/black-rook.png); }
+		&.black-knight { background-image: url(~/icons/black-knight.png); }
+		&.black-bishop { background-image: url(~/icons/black-bishop.png); }
+		&.black-queen { background-image: url(~/icons/black-queen.png); }
+		&.black-king { background-image: url(~/icons/black-king.png); }
+		&.black-pawn { background-image: url(~/icons/black-pawn.png); }
+
+		&.white-rook { background-image: url(~/icons/white-rook.png); }
+		&.white-knight { background-image: url(~/icons/white-knight.png); }
+		&.white-bishop { background-image: url(~/icons/white-bishop.png); }
+		&.white-queen { background-image: url(~/icons/white-queen.png); }
+		&.white-king { background-image: url(~/icons/white-king.png); }
+		&.white-pawn { background-image: url(~/icons/white-pawn.png); }
+	}
+}
