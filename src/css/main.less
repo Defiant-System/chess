@@ -1,10 +1,13 @@
 
+background: #946f51;
+
 content {
 	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
+	padding: 5px;
 	--box-size: 78px;
 
 	.board {
@@ -13,6 +16,17 @@ content {
 		background: url(~/icons/board.png);
 		position: relative;
 		font-size: 0;
+
+		&:before {
+			content: "";
+			background: #674d38;
+			position: absolute;
+			top: -5px;
+			left: -5px;
+			right: -5px;
+			bottom: -5px;
+			z-index: -1;
+		}
 	}
 
 	coords {

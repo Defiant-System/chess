@@ -4,8 +4,8 @@
 		<meta name="title" value="Chess" version="1.0"/>
 		<meta name="author" value="Hakan Bilgin" namespace="ant"/>
 		<meta name="license" value="AGPL-3.0"/>
-		<meta name="width" value="700"/>
-		<meta name="height" value="700"/>
+		<meta name="width" value="860"/>
+		<meta name="height" value="635"/>
 		<meta name="top" value="120"/>
 		<meta name="left" value="120"/>
 		<meta name="minimize"/>
