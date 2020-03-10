@@ -1,5 +1,5 @@
 
-background: #946f51;
+background: #eee;
 
 content {
 	position: absolute;
@@ -7,7 +7,7 @@ content {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	padding: 5px;
+	padding: 11px;
 	--box-size: 78px;
 
 	.board {
@@ -16,17 +16,8 @@ content {
 		background: url(~/icons/board.png);
 		position: relative;
 		font-size: 0;
-
-		&:before {
-			content: "";
-			background: #674d38;
-			position: absolute;
-			top: -5px;
-			left: -5px;
-			right: -5px;
-			bottom: -5px;
-			z-index: -1;
-		}
+		box-shadow: 0 2px 3px rgba(0,0,0,.35);
+		pointer-events: none;
 	}
 
 	coords {
@@ -35,6 +26,7 @@ content {
 		font-size: 11px;
 		font-family: sans-serif;
 		color: #f0d9b5;
+		pointer-events: none;
 
 		&.ranks {
 			top: 0;
@@ -78,6 +70,7 @@ content {
 		left: 0;
 		width: 12.5%;
 		height: 12.5%;
+		pointer-events: none;
 		transition: transform 200ms;
 
 		&.black-rook { background-image: url(~/icons/black-rook.png); }

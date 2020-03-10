@@ -1,0 +1,19 @@
+<ToolBar>
+	<Group>
+		<Options>
+			<Tool symbol="icon-undo" state="disabled"/>
+			<Tool symbol="icon-redo" state="disabled"/>
+		</Options>
+		<Options>
+			<Tool symbol="icon-blank"/>
+			<Tool symbol="icon-blank"/>
+			<Tool symbol="icon-blank"/>
+		</Options>
+		<Options>
+			<Tool symbol="icon-blank" state="active"/>
+			<Tool symbol="icon-blank"/>
+			<Tool symbol="icon-blank"/>
+			<Tool symbol="icon-blank"/>
+		</Options>
+	</Group>
+</ToolBar>

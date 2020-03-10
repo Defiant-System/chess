@@ -4,12 +4,12 @@
 		<meta name="title" value="Chess" version="1.0"/>
 		<meta name="author" value="Hakan Bilgin" namespace="ant"/>
 		<meta name="license" value="AGPL-3.0"/>
-		<meta name="width" value="860"/>
-		<meta name="height" value="635"/>
+		<meta name="width" value="940"/>
+		<meta name="height" value="647"/>
 		<meta name="top" value="120"/>
 		<meta name="left" value="120"/>
 		<meta name="minimize"/>
-		<meta name="maximize"/>
+		<meta name="maximize" value="disabled"/>
 		<meta name="resize"/>
 		<meta name="script" value="src/js/main.js"/>
 		<meta name="style" value="src/css/main.less"/>
@@ -17,5 +17,11 @@
 		<meta name="icons" value="src/svg/icons.svg"/>
 
 		@import "src/partials/menubar.xml"
+		@import "src/partials/toolbar.xml"
+
+		<TabBar>
+			<Tab name="test"/>
+			<Tab name="test 2"/>
+		</TabBar>
 	</Head>
 </Application>
