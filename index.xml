@@ -11,6 +11,7 @@
 		<meta name="minimize"/>
 		<meta name="maximize" value="disabled"/>
 		<meta name="resize"/>
+		<meta name="clones" value="true"/>
 		<meta name="script" value="src/js/main.js"/>
 		<meta name="style" value="src/css/main.less"/>
 		<meta name="content" value="src/partials/content.htm"/>
@@ -18,10 +19,5 @@
 
 		@import "src/partials/menubar.xml"
 		@import "src/partials/toolbar.xml"
-
-		<TabBar>
-			<Tab name="test"/>
-			<Tab name="test 2"/>
-		</TabBar>
 	</Head>
 </Application>

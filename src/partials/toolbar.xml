@@ -10,7 +10,7 @@
 			<Tool symbol="icon-blank"/>
 		</Options>
 		<Options>
-			<Tool symbol="icon-blank" state="active"/>
+			<Tool symbol="icon-blank" state1="active"/>
 			<Tool symbol="icon-blank"/>
 			<Tool symbol="icon-blank"/>
 			<Tool symbol="icon-blank"/>
