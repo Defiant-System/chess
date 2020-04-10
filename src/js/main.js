@@ -16,6 +16,7 @@ const PIECES = {
 };
 
 const games = {};
+let game;
 
 const chess = {
 	init() {
@@ -30,10 +31,10 @@ const chess = {
 		//let fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq e3 0 1";
 		//let fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq e3 0 1";
 		let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-		games[1] = new Chess(fen);
+		game = new Chess(fen);
 
-		let rows = games[1].board(),
-			turnColor = COLORS[games[1].turn()],
+		let rows = game.board(),
+			turnColor = COLORS[game.turn()],
 			htm = [];
 		rows.map((row, y) => {
 			row.map((square, x) => {
@@ -48,18 +49,49 @@ const chess = {
 			.html(htm.join(""));
 	},
 	dispatch(event) {
-		let square,
+		let self = chess,
+			square,
 			moves,
 			name,
+			htm,
 			el;
 		switch (event.type) {
 			case "focus-piece":
 				el = $(event.target);
 				name = el.prop("className");
 				square = name.match(/pos-(.{2})/)[1];
-				moves = games[1].moves({ square });
 
-				console.log( moves );
+				// remove previous possible moves
+				self.board.find(".can-move").remove();
+
+				if (name.startsWith("can-move pos-")) {
+					let piece = self.board.find(".active"),
+						from = piece.prop("className").match(/pos-(.{2})/)[1],
+						to = square,
+						valid = game.move({ from, to });
+					
+					// throw error if invalid move
+					if (!valid) throw "invalid move";
+
+					piece.removeClass("active")
+						.cssSequence("to-"+ to, "transitionend", el => {
+							el.removeClass("to-"+ to +" pos-"+ from)
+								.addClass("pos-"+ to);
+						});
+
+					let turnColor = COLORS[game.turn()];
+					self.board
+						.removeClass("white-turn black-turn")
+						.addClass(`${turnColor}-turn`);
+					return;
+				}
+
+				self.board.find(".active").removeClass("active");
+				el.addClass("active");
+				moves = game.moves({ square });
+
+				htm = moves.map(move => `<piece class="can-move pos-${move.slice(-2)}"></piece>`);
+				self.board.append(htm.join(""));
 				break;
 		}
 	}

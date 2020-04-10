@@ -67,12 +67,12 @@ content {
 
 	.board {
 		&.black-turn {
-			piece[class^="black-"]:hover {
+			piece[class^="black-"]:not(.active):hover {
 				box-shadow: inset 0 0 0 4px rgba(120,185,130,.5);
 			}
 		}
 		&.white-turn {
-			piece[class^="white-"]:hover {
+			piece[class^="white-"]:not(.active):hover {
 				box-shadow: inset 0 0 0 4px rgba(120,185,130,.5);
 			}
 		}
@@ -87,6 +87,17 @@ content {
 		height: 12.5%;
 		//pointer-events: none;
 		transition: transform 200ms;
+
+		&.can-move {
+			background: radial-gradient(rgba(20,85,30,0.5) 19%, rgba(0,0,0,0) 20%);
+			cursor: pointer;
+
+			&:hover { background: rgba(120,185,130,.75); }
+		}
+
+		&.active {
+			background: rgba(20,85,30,.75);
+		}
 
 		&.black-rook { background-image: url(~/icons/black-rook.png); }
 		&.black-knight { background-image: url(~/icons/black-knight.png); }
