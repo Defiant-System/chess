@@ -93,6 +93,8 @@ const chess = {
 				htm = moves.map(move => `<piece class="can-move pos-${move.slice(-2)}"></piece>`);
 				self.board.append(htm.join(""));
 				break;
+			case "after-move":
+				break;
 		}
 	}
 };
