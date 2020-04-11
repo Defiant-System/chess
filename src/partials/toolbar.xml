@@ -4,13 +4,8 @@
 			<Tool symbol="icon-undo" state="disabled"/>
 			<Tool symbol="icon-redo" state="disabled"/>
 		</Options>
+		<Tool symbol="icon-blank" click="output-fen-string"/>
 		<Options>
-			<Tool symbol="icon-blank"/>
-			<Tool symbol="icon-blank"/>
-			<Tool symbol="icon-blank"/>
-		</Options>
-		<Options>
-			<Tool symbol="icon-blank" state1="active"/>
 			<Tool symbol="icon-blank"/>
 			<Tool symbol="icon-blank"/>
 			<Tool symbol="icon-blank"/>
