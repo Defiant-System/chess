@@ -33,6 +33,7 @@ content {
 		font-family: sans-serif;
 		color: #f0d9b5;
 		pointer-events: none;
+		user-select: none;
 
 		&.ranks {
 			top: 0;
@@ -97,10 +98,16 @@ content {
 			background: radial-gradient(rgba(20,85,30,0.5) 19%, rgba(0,0,0,0) 20%);
 			cursor: pointer;
 
-			&:hover { background: rgba(120,185,130,.75); }
+			&:hover {
+				background: rgba(20,85,30,.5);
+			}
 
 			&.piece-capture {
 				background: radial-gradient(transparent 0%, transparent 80%, rgba(20,85,0,0.3) 80%);
+
+				&:hover {
+					background: rgba(20,85,30,.5);
+				}
 			}
 		}
 
