@@ -1,5 +1,5 @@
 
-background: #eee;
+background: #ececec;
 
 content {
 	position: absolute;
@@ -7,8 +7,8 @@ content {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	padding: 11px;
 	--box-size: 78px;
+	display: flex;
 
 	.chess {
 		width: calc( var(--box-size) * 8 );
@@ -17,7 +17,13 @@ content {
 		position: relative;
 		font-size: 0;
 		box-shadow: 0 2px 3px rgba(0,0,0,.35);
+		margin: 11px;
 		//pointer-events: none;
+	}
+
+	.sidebar {
+		flex: 1;
+		padding: 8px 10px 9px 0px;
 	}
 
 	coords {
