@@ -83,6 +83,12 @@ content {
 				box-shadow: inset 0 0 0 4px rgba(120,185,130,.6);
 			}
 		}
+		&.can-move-squares {
+			piece[class^="black-"],
+			piece[class^="white-"] {
+				pointer-events: none;
+			}
+		}
 	}
 
 	piece {
@@ -111,12 +117,16 @@ content {
 			}
 		}
 
-		&.from-pos {
+		&.move-from-pos {
 			background: rgba(134,193,72,.65);
 		}
 
-		&.to-pos {
+		&.move-to-pos {
 			background: rgba(134,193,72,.65);
+		}
+
+		&.moving {
+			z-index: 2;
 		}
 
 		&.active {
