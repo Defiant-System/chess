@@ -32,13 +32,15 @@ const chess = {
 		//let fen = "4k3/4P3/4K3/8/8/8/8/8 b - - 0 78"; // draw
 		//let fen = "4r3/8/2p2PPk/1p6/pP2p1R1/P1B5/2P2K2/3r4 w - - 1 45";
 		//let fen = "4r3/8/2p2PPk/1p6/pP2p2R/P1B5/2P2K2/3r4 b - - 2 45";
+		let fen = "4r3/5P2/2p5/1p5k/pP2p1R1/P1B5/2P2K2/3r4 w - - 1 48";
 		//let fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq e3 0 1";
-		let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+		//let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		//let fen = "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
 		this.dispatch({ type: "game-from-fen", fen });
 
-		let move = { from: "e2", to: "e4", color: "w", piece: "p" };
-		//setTimeout(() => this.dispatch({ ...move, type: "make-move" }), 500);
+		//let move = { from: "e2", to: "e4", color: "w", piece: "p" };
+		// let move = { from: "h6", to: "g6", color: "b", piece: "k" };
+		// setTimeout(() => this.dispatch({ ...move, type: "make-move" }), 500);
 	},
 	dispatch(event) {
 		let self = chess,
@@ -68,6 +70,11 @@ const chess = {
 
 				// do stuff after move
 				self.dispatch({ type: "after-move" });
+				break;
+			case "reset-board":
+				self.board.find(".active").removeClass("active");
+				self.board.find(".can-move").remove();
+				self.board.removeClass("can-move-squares");
 				break;
 			case "focus-piece":
 				el = $(event.target);
@@ -110,7 +117,12 @@ const chess = {
 							.removeClass("moving to-"+ event.to +" pos-"+ event.from)
 							.addClass("pos-"+ event.to);
 
-						game.move({ from: event.from, to: event.to });
+						let res = game.move({ from: event.from, to: event.to, /*promotion: "q"*/ });
+						if (res && res.captured) {
+							let cc = res.color === "w" ? "b" : "w";
+							// remove captured piece
+							self.board.find(`piece.pos-${res.to}.${COLORS[cc]}-${PIECES[res.captured]}`).remove();
+						}
 
 						self.dispatch({ type: "after-move" });
 					});

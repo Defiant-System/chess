@@ -1,5 +1,5 @@
 <content>
-	<div class="chess" data-click="reset-move">
+	<div class="chess show-pawn-promotion1" data-click="reset-board">
 		<div class="board" data-click="focus-piece">
 			<!--
 			<piece class="black-rook pos-a8"></piece>
@@ -51,6 +51,7 @@
 			<coord>7</coord>
 			<coord>8</coord>
 		</coords>
+
 		<coords class="files">
 			<coord>a</coord>
 			<coord>b</coord>
@@ -61,6 +62,13 @@
 			<coord>g</coord>
 			<coord>h</coord>
 		</coords>
+
+		<div class="pawn-promotion" data-click="promote-pawn">
+			<piece class="king"></piece>
+			<piece class="rook"></piece>
+			<piece class="bishop"></piece>
+			<piece class="knight"></piece>
+		</div>
 	</div>
 	<div class="sidebar">
 
