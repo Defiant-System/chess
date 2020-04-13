@@ -16,3 +16,7 @@
 		<Menu name="Source Code"/>
 	</Menu>
 </MenuBar>
+
+<Menu for="toolbar-config">
+	<Menu name="Fen String" click="output-fen-string"/>
+</Menu>

@@ -4,11 +4,12 @@
 			<Tool symbol="icon-undo" state="disabled"/>
 			<Tool symbol="icon-redo" state="disabled"/>
 		</Options>
-		<Tool symbol="icon-blank" click="output-fen-string"/>
+		<Tool symbol="icon-rotate"/>
 		<Options>
 			<Tool symbol="icon-blank"/>
 			<Tool symbol="icon-blank"/>
 			<Tool symbol="icon-blank"/>
 		</Options>
+		<Tool symbol="icon-gear" menu="toolbar-config"/>
 	</Group>
 </ToolBar>

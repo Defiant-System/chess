@@ -57,6 +57,9 @@ const chess = {
 			case "output-fen-string":
 				console.log(game.fen());
 				break;
+			case "do-option-button":
+				console.log(event);
+				break;
 			case "game-from-fen":
 				game = new Chess(event.fen);
 
