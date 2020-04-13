@@ -31,7 +31,7 @@ const chess = {
 		//let fen = "rnb1kbnr/pppp1ppp/8/4p3/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3"; // checkmate
 		//let fen = "4k3/4P3/4K3/8/8/8/8/8 b - - 0 78"; // draw
 		//let fen = "4r3/8/2p2PPk/1p6/pP2p1R1/P1B5/2P2K2/3r4 w - - 1 45";
-		//let fen = "4r3/8/2p2PPk/1p6/pP2p2R/P1B5/2P2K2/3r4 b - - 2 45";
+		//let fen = "7k/6R1/8/1p6/pP6/P1B5/2P2K1p/8 b - - 1 48";
 		let fen = "4r3/5P2/2p5/1p5k/pP2p1R1/P1B5/2P2K1p/3r4 w - - 1 48";
 		//let fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq e3 0 1";
 		//let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -107,6 +107,9 @@ const chess = {
 				self.board.addClass("can-move-squares").prepend(htm.join(""));
 				break;
 			case "make-move":
+				if (!event.from || !event.to) {
+					self.dispatch({ type: "after-move" });
+				}
 				// reset board
 				self.board.find(".move-to-pos, .active").removeClass("move-to-pos active");
 				self.board.find(".move-from-pos, .can-move").remove();
@@ -124,10 +127,19 @@ const chess = {
 							isPromotion = event.piece === "p" && self.isPromotion(move);
 
 						if (isPromotion) {
-							// clean up move object
-							delete move.type;
 							// save move
 							self.moveAfterPromotion = move;
+							// clean up move object
+							delete move.type;
+							// hide possible captured piece
+							self.board.find(`piece.pos-${move.to}:not(.${COLORS[move.color]}-${PIECES[move.piece]})`).addClass("hidden");
+
+							// if move made by AI
+							if (move.color === "b") {
+								move.name = "queen";
+								return self.dispatch({ ...move, type: "promote-pawn" });
+							}
+							
 							// show lightbox
 							return self.board.parent().addClass("show-pawn-promotion");
 						}
@@ -152,13 +164,13 @@ const chess = {
 					self.board.find(`.${turnColor}-king`).addClass("in-check");
 				}
 				if (game.in_checkmate()) {
-					console.log("check mate");
+					return console.log("check mate");
 				}
 				if (game.in_draw()) {
-					console.log("draw");
+					return console.log("draw");
 				}
 				if (game.in_stalemate()) {
-					console.log("stalemate");
+					return console.log("stalemate");
 				}
 
 				// update window title
@@ -180,7 +192,7 @@ const chess = {
 				}
 				break;
 			case "promote-pawn":
-				name = event.target.className.split("-")[0];
+				name = event.name || event.target.className.split("-")[0];
 				move = self.moveAfterPromotion;
 				move.promotion = self.getPieceKey(name);
 				// clean up
@@ -197,6 +209,7 @@ const chess = {
 				// update pawn piece
 				piece = self.board.find(`.${COLORS[move.color]}-${PIECES[move.piece]}.pos-${move.to}`);
 				piece.prop("className", `${COLORS[move.color]}-${name} pos-${move.to}`);
+				piece.addClass("active");
 
 				self.dispatch({ type: "after-move" });
 				break;

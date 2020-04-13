@@ -17,7 +17,8 @@ content {
 		background: url(~/icons/board.png);
 		position: relative;
 		font-size: 0;
-		box-shadow: 0 2px 3px rgba(0,0,0,.35);
+		//box-shadow: 0 2px 3px rgba(0,0,0,.35);
+		box-shadow: 0 0 0 2px #956843;
 		margin: 11px;
 		//pointer-events: none;
 
@@ -41,7 +42,7 @@ content {
 
 	.sidebar {
 		flex: 1;
-		padding: 8px 10px 9px 0px;
+		padding: 7px 9px 9px 1px;
 	}
 
 	coords {
@@ -74,12 +75,12 @@ content {
 			left: 0;
 			right: 0;
 			bottom: 0;
-			height: 1.15em;
+			height: 1.1em;
 			flex-flow: row;
 
 			coord {
 				flex: 1 1 auto;
-				padding-left: 2px;
+				padding-left: 3px;
 
 				&:nth-of-type(even) {
 					color: #946f51;
@@ -221,6 +222,10 @@ content {
 					red 0%, #e70000 25%,
 					rgba(169,0,0,0) 89%,
 					rgba(158,0,0,0) 100%);
+		}
+
+		&.hidden {
+			display: none;
 		}
 
 		&.black-rook:after,
