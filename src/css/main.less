@@ -57,18 +57,28 @@ content {
 		flex: 1;
 		padding: 7px 9px 9px 1px;
 
+		.tab-chat {
+			background: #f6f6f6;
+			padding-left: 0;
+			padding-right: 0;
+			padding-bottom: 0;
+			border-radius: inherit;
+		}
+		.tab-history {}
+		.tab-notes {}
+
 		.chat-box {
 			position: relative;
-			background: #fafafa;
-			border: 1px solid #cecece;
-			border-radius: 2px;
-			min-height: 450px;
+			height: 100%;
 			display: flex;
 			flex-flow: column;
+			border-radius: inherit;
 
 			.transcript {
 				flex: 1;
-				padding: 2px 3px;
+				padding: 0 4px 2px;
+				overflow-x: hidden;
+				overflow-y: auto;
 
 				> div {
 					position: relative;
@@ -84,17 +94,22 @@ content {
 						content: "";
 					    position: absolute;
 					    bottom: 0px;
-					    width: 15px;
-					    height: 8px;
+					    width: 16px;
+					    height: 9px;
+					}
+
+					&:first-child {
+						margin-top: 0;
 					}
 
 					&.sent {
 						background: #007afe;
 						color: #fff;
 						float: right;
+						//filter: drop-shadow(0 1px 0 #007afe);
 
 						&:after {
-						    right: -7px;
+						    right: -9px;
 						    background: radial-gradient(circle at top right, transparent 49%, #007afe 56%);
 						    border-radius: 0 0 0 11px;
 						}
@@ -105,6 +120,7 @@ content {
 						color: #222;
 						float: left;
 						margin-top: 13px;
+						//filter: drop-shadow(0 1px 0 rgba(#000, .2));
 
 						&:after {
 						    left: -7px;
@@ -115,7 +131,7 @@ content {
 						&:before {
 							content: attr(data-from);
 							position: absolute;
-							top: -15px;
+							top: -16px;
 							left: 5px;
 							font-size: 11px;
 							white-space: nowrap;
@@ -135,19 +151,37 @@ content {
 
 			.chat-input {
 				background: #eee;
-				border-top: 1px solid #cecece;
-				border-radius: 2px;
-				height: 41px;
+				border-top: 1px solid #ddd;
 				padding: 7px;
+				border-radius: inherit;
+				border-top-left-radius: 0;
+				border-top-right-radius: 0;
 
 				> div {
+					position: relative;
 					background: #fff;
-					color: #555;
+					color: #333;
 					border: 1px solid #cecece;
 					border-radius: 17px;
 					font-size: 13px;
 					line-height: 1.35;
-					padding: 3px 5px;
+					padding: 3px 21px 3px 9px;
+
+					&:empty:not(:focus):before {
+						content: attr(placeholder);
+						color: #666;
+					}
+
+					&:after {
+						content: "";
+						background: url(~/icons/icon-return.png) 50% 50% no-repeat;
+						position: absolute;
+						bottom: 3px;
+						right: 7px;
+						width: 16px;
+						height: 16px;
+						opacity: .35;
+					}
 				}
 			}
 		}
@@ -424,21 +458,24 @@ content {
 			left: 0;
 			right: 0;
 			bottom: 0;
+			background-repeat: no-repeat;
+			background-size: 95%;
+			background-position: 50% 50%;
 		}
 
-		&.black-rook:after { background: url(~/icons/black-rook.png); }
-		&.black-knight:after { background: url(~/icons/black-knight.png); }
-		&.black-bishop:after { background: url(~/icons/black-bishop.png); }
-		&.black-queen:after { background: url(~/icons/black-queen.png); }
-		&.black-king:after { background: url(~/icons/black-king.png); }
-		&.black-pawn:after { background: url(~/icons/black-pawn.png); }
+		&.black-rook:after { background-image: url(~/icons/black-rook.png); }
+		&.black-knight:after { background-image: url(~/icons/black-knight.png); }
+		&.black-bishop:after { background-image: url(~/icons/black-bishop.png); }
+		&.black-queen:after { background-image: url(~/icons/black-queen.png); }
+		&.black-king:after { background-image: url(~/icons/black-king.png); }
+		&.black-pawn:after { background-image: url(~/icons/black-pawn.png); }
 
-		&.white-rook:after { background: url(~/icons/white-rook.png); }
-		&.white-knight:after { background: url(~/icons/white-knight.png); }
-		&.white-bishop:after { background: url(~/icons/white-bishop.png); }
-		&.white-queen:after { background: url(~/icons/white-queen.png); }
-		&.white-king:after { background: url(~/icons/white-king.png); }
-		&.white-pawn:after { background: url(~/icons/white-pawn.png); }
+		&.white-rook:after { background-image: url(~/icons/white-rook.png); }
+		&.white-knight:after { background-image: url(~/icons/white-knight.png); }
+		&.white-bishop:after { background-image: url(~/icons/white-bishop.png); }
+		&.white-queen:after { background-image: url(~/icons/white-queen.png); }
+		&.white-king:after { background-image: url(~/icons/white-king.png); }
+		&.white-pawn:after { background-image: url(~/icons/white-pawn.png); }
 
 		&.pos-a8 { transform: translate( calc( var(--box-size) * 0 ), calc( var(--box-size) * 0 ) ); }
 		&.pos-b8 { transform: translate( calc( var(--box-size) * 1 ), calc( var(--box-size) * 0 ) ); }
