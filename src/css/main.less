@@ -90,14 +90,14 @@ content {
 					}
 
 					&.sent {
-						background: #d6d6d6;
+						background: #ddd;
 						color: #222;
 						float: right;
-						//filter: drop-shadow(0 1px 0 #d6d6d6);
+						//filter: drop-shadow(0 1px 0 #ddd);
 
 						&:after {
 						    right: -9px;
-						    background: radial-gradient(circle at top right, transparent 49%, #d6d6d6 56%);
+						    background: radial-gradient(circle at top right, transparent 49%, #ddd 56%);
 						    border-radius: 0 0 0 11px;
 						}
 					}
@@ -251,6 +251,7 @@ content {
 		font-family: sans-serif;
 		font-weight: 600;
 		color: #dfdfdf;
+		text-shadow: 0 1px 0 rgba(0,0,0,.35);
 		pointer-events: none;
 		user-select: none;
 
@@ -267,6 +268,7 @@ content {
 
 				&:nth-of-type(odd) {
 					color: #8097c6;
+					text-shadow: 0 0 0;
 				}
 			}
 		}
@@ -274,7 +276,7 @@ content {
 		&.files {
 			left: 0;
 			right: 0;
-			bottom: 0;
+			bottom: 1px;
 			height: 1.1em;
 			flex-flow: row;
 
@@ -284,6 +286,7 @@ content {
 
 				&:nth-of-type(even) {
 					color: #8097c6;
+					text-shadow: 0 0 0;
 				}
 			}
 		}
