@@ -36,7 +36,7 @@ const chess = {
 		//let fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq e3 0 1";
 		//let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		//let fen = "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
-		let fen = "r3k2r/p7/3b1p2/2NP3p/8/8/PPPB1PPP/R3K2R w KQk - 1 17";
+		let fen = "r3k2r/p7/3b1p2/2NP3p/2Q5/8/PPPB1PPP/R3K2R w KQk - 1 17";
 		this.dispatch({ type: "game-from-fen", fen });
 
 		//let move = { from: "e2", to: "e4", color: "w", piece: "p" };
@@ -57,6 +57,7 @@ const chess = {
 			name,
 			htm,
 			el;
+		//console.log(event);
 		switch (event.type) {
 			case "output-fen-string":
 				console.log(game.fen());
@@ -91,6 +92,16 @@ const chess = {
 				name = el.prop("className");
 				square = name.match(/pos-(.{2})/)[1];
 
+				if (~name.indexOf("castling-rook")) {
+					move = {
+						from: el.data("from"),
+						to: el.data("to"),
+						color: el.data("color"),
+						piece: "k",
+					};
+					return self.dispatch({ ...move, type: "make-move" });
+				}
+				
 				if (name.startsWith("can-move pos-")) {
 					el = self.board.find(".active");
 					name = el.prop("className");
@@ -101,25 +112,22 @@ const chess = {
 						color: name.slice(0, 1),
 						piece: self.getPieceKey(name.match(/-(\w+)/)[1]),
 					};
-					self.dispatch({ ...move, type: "make-move" });
-					return;
+					return self.dispatch({ ...move, type: "make-move" });
 				}
 
 				self.board.find(".active").removeClass("active");
 				el.addClass("active");
 				moves = game.moves({ square, verbose: true });
-				
+
+				htm = moves.map(move => `<piece class="can-move pos-${move.to} ${move.captured ? "piece-capture" : ""}"></piece>`);
+
 				// check if moves enables castling
 				moves.map(move => {
 					let castle = self.isCastling(move);
-					if (castle) {
-						self.board
-							.find(`.${COLORS[castle.color]}-${PIECES[castle.piece]}.pos-${castle.from}`)
-							.addClass("castling-rook");
-					}
+					if (!castle) return;
+					htm.push(`<piece class="can-move pos-${castle.from} castling-rook" data-from="${move.from}" data-to="${move.to}" data-color="${move.color}"></piece>`);
 				});
 
-				htm = moves.map(move => `<piece class="can-move pos-${move.to} ${move.captured ? "piece-capture" : ""}"></piece>`);
 				self.board.addClass("can-move-squares").prepend(htm.join(""));
 				break;
 			case "make-move":
