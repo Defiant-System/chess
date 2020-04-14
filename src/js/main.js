@@ -35,7 +35,8 @@ const chess = {
 		//let fen = "4r3/5P2/2p5/1p5k/QP2p1R1/P1B5/2P2K1p/3r4 w - - 1 48";
 		//let fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq e3 0 1";
 		//let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-		let fen = "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
+		//let fen = "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
+		let fen = "r3k2r/p7/3b1p2/2NP3p/8/8/PPPB1PPP/R3K2R w KQk - 1 17";
 		this.dispatch({ type: "game-from-fen", fen });
 
 		//let move = { from: "e2", to: "e4", color: "w", piece: "p" };
@@ -44,6 +45,9 @@ const chess = {
 		
 		// let move = { from: "h7", to: "h8", color: "w", piece: "p" };
 		// console.log( this.isPromotion(move) );
+		
+		// let move = { from: "e1", to: "g1", color: "w", piece: "k" };
+		// console.log( this.isCastling(move) );
 	},
 	dispatch(event) {
 		let self = chess,
@@ -78,7 +82,7 @@ const chess = {
 				self.dispatch({ type: "after-move" });
 				break;
 			case "reset-board":
-				self.board.find(".active").removeClass("active");
+				self.board.find(".active, .castling-rook").removeClass("active castling-rook");
 				self.board.find(".can-move").remove();
 				self.board.removeClass("can-move-squares");
 				break;
@@ -105,7 +109,16 @@ const chess = {
 				el.addClass("active");
 				moves = game.moves({ square, verbose: true });
 				
-				//moves.map(move => console.log(move));
+				// check if moves enables castling
+				moves.map(move => {
+					let castle = self.isCastling(move);
+					if (castle) {
+						self.board
+							.find(`.${COLORS[castle.color]}-${PIECES[castle.piece]}.pos-${castle.from}`)
+							.addClass("castling-rook");
+					}
+				});
+
 				htm = moves.map(move => `<piece class="can-move pos-${move.to} ${move.captured ? "piece-capture" : ""}"></piece>`);
 				self.board.addClass("can-move-squares").prepend(htm.join(""));
 				break;
@@ -118,6 +131,16 @@ const chess = {
 				self.board.find(".move-from-pos, .can-move").remove();
 				// place holder
 				self.board.append(`<piece class="move-from-pos pos-${event.from}"></piece>`);
+
+				let castle = self.isCastling(event);
+				if (castle) {
+					self.board
+						.find(`.${COLORS[castle.color]}-${PIECES[castle.piece]}.pos-${castle.from}`)
+						.cssSequence("moving to-"+ castle.to, "transitionend", el => {
+								el.removeClass("moving to-"+ castle.to +" pos-"+ castle.from)
+									.addClass("pos-"+ castle.to);
+							});
+				}
 
 				piece = self.board.find(`.${COLORS[event.color]}-${PIECES[event.piece]}.pos-${event.from}`);
 
@@ -184,13 +207,13 @@ const chess = {
 					.removeClass("can-move-squares white-turn black-turn")
 					.addClass(`${turnColor}-turn`);
 				// remove previous possible moves
-				self.board.find(".move-to-pos").removeClass("move-to-pos");
+				self.board.find(".move-to-pos, .castling-rook").removeClass("move-to-pos castling-rook");
 
 				if (turnColor === "black") {
 					setTimeout(() => {
 						// simple ai move
 						let move = AI.makeBestMove();
-						self.dispatch({ ...move, type: "make-move" });
+						//self.dispatch({ ...move, type: "make-move" });
 					}, 500);
 				}
 				break;
@@ -221,6 +244,25 @@ const chess = {
 	getPieceKey(name) {
 		for (let key in PIECES) {
 			if (PIECES[key] === name) return key;
+		}
+	},
+	isCastling(move) {
+		if (move.piece !== "k") return;
+		if (game.turn() === "w" && move.color === "w") {
+			if (move.from === "e1" && move.to === "g1") {
+				return { piece: "r", color: "w", from: "h1", to: "f1" };
+			}
+			if (move.from === "e1" && move.to === "c1") {
+				return { piece: "r", color: "w", from: "a1", to: "d1" };
+			}
+		}
+		if (game.turn() === "b" && move.color === "b") {
+			if (move.from === "e8" && move.to === "g8") {
+				return { piece: "r", color: "b", from: "h8", to: "f8" };
+			}
+			if (move.from === "e1" && move.to === "c1") {
+				return { piece: "r", color: "b", from: "a8", to: "d8" };
+			}
 		}
 	},
 	isPromotion(move) {

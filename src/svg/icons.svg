@@ -61,9 +61,9 @@
 			<g id="b">
 				<g id="c">
 					<g id="d">
-						<rect width="1" height="1" fill="#f0d9b5" id="e"/>
+						<rect width="1" height="1" fill="#dfdfdf" id="e"/>
 						<use x="1" y="1" href="#e"/>
-						<rect y="1" width="1" height="1" fill="#b58863" id="f"/>
+						<rect y="1" width="1" height="1" fill="#8097c6" id="f"/>
 						<use x="1" y="-1" href="#f"/>
 					</g>
 				  	<use x="2" href="#d"/>
