@@ -74,19 +74,30 @@
 
 		<div class="tab-view_" sys-click="do-tab-row">
 			<div class="tab-row_">
-				<div>Chat</div>
-				<div class="tab-active_">History</div>
+				<div class="tab-active_">Chat</div>
+				<div>History</div>
 				<div>Notes</div>
 			</div>
 
 			<div class="tab-body_">
 				<!-- Chat -->
-				<div>
-					Chat
+				<div class="tab-active_">
+					<div class="chat-box">
+						<div class="transcript">
+							<div class="sent">This is the best chat interface ever</div>
+							<div class="received" data-from="Laura Bularca">I agree</div>
+							<div class="received" data-from="Laura Bularca">Testing to write stuff</div>
+							<div class="sent">Some more example text</div>
+							<div class="received" data-from="Laura Bularca">I listen to music</div>
+						</div>
+						<div class="chat-input">
+							<div contenteditable="true">sample text goes here...</div>
+						</div>
+					</div>
 				</div>
 
 				<!-- History -->
-				<div class="tab-active_">
+				<div>
 					<div class="list-body">
 						<span class="index">1</span>
 						<span class="move"><piece class="white-rook"></piece>d2</span>
@@ -158,6 +169,8 @@
 						<span>text glas 2</span>
 						<span class="disabled">text 3</span>
 					</span>-->
+
+					<hr>
 					
 				</div>
 
