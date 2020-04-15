@@ -2,11 +2,12 @@
 ant_require("modules/chess.0.10.3.js");
 ant_require("modules/chess-ai.js");
 
+const FILES = "abcdefgh";
+const RANKS = "87654321";
 const COLORS = {
 	w: "white",
 	b: "black",
 };
-
 const PIECES = {
 	p: "pawn",
 	n: "knight",
@@ -52,6 +53,9 @@ const chess = {
 	},
 	dispatch(event) {
 		let self = chess,
+			orientation,
+			files = FILES,
+			ranks = RANKS,
 			square,
 			moves,
 			move,
@@ -67,13 +71,20 @@ const chess = {
 				console.log(event);
 				break;
 			case "game-from-fen":
+				el = self.board.parent();
 				game = new Chess(event.fen);
+				orientation = self.board.parent().data("orientation");
+
+				if (orientation === "black") {
+					files = files.split("").reverse().join("");
+					ranks = ranks.split("").reverse().join("");
+				}
 
 				htm = [];
 				game.board().map((row, y) => {
 					row.map((square, x) => {
 						if (!square) return;
-						let pos = "abcdefgh".charAt(x) + "87654321".charAt(y);
+						let pos = files.charAt(x) + ranks.charAt(y);
 						htm.push(`<piece class="${COLORS[square.color]}-${PIECES[square.type]} pos-${pos}"></piece>`);
 					});
 				});
@@ -82,6 +93,35 @@ const chess = {
 
 				// do stuff after move
 				self.dispatch({ type: "after-move" });
+				break;
+			case "rotate-board":
+				el = self.board.parent();
+				orientation = el.data("orientation");
+
+				/*
+				if (orientation === "black") {
+					files = files.split("").reverse().join("");
+					ranks = ranks.split("").reverse().join("");
+				}
+				let flipFiles = files.split("").reverse().join(""),
+					flipRanks = ranks.split("").reverse().join("");
+
+				game.board().map((row, y) => {
+					row.map((square, x) => {
+						if (!square) return;
+						let pos = files.charAt(x) + ranks.charAt(y),
+							toPos = flipFiles.charAt(x) + flipRanks.charAt(y),
+							piece = self.board.find(`.${COLORS[square.color]}-${PIECES[square.type]}.pos-${pos}`);
+						
+						piece.cssSequence("moving to-"+ toPos, "transitionend", el => {
+								el.removeClass("moving to-"+ toPos +" pos-"+ pos)
+									.addClass("pos-"+ toPos);
+							});
+					});
+				});
+				*/
+
+				el.data("orientation", orientation === "white" ? "black" : "white");
 				break;
 			case "reset-board":
 				self.board.find(".active, .castling-rook").removeClass("active castling-rook");

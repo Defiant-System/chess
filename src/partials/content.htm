@@ -1,5 +1,5 @@
 <content>
-	<div class="chess" data-click="reset-board">
+	<div class="chess show-pawn-promotion1 show-game-over1" data-orientation="white" data-click="reset-board">
 		<div class="board" data-click="focus-piece">
 			<!--
 			<piece class="black-rook pos-a8"></piece>
@@ -63,7 +63,15 @@
 			<coord>h</coord>
 		</coords>
 
-		<div class="pawn-promotion" data-click="promote-pawn">
+		<div class="dialog game-over">
+			<h2>Game over</h2>
+			<h4>Game drawn by stalemate</h4>
+			<div class="button-row">
+				<button>Rematch</button>
+			</div>
+		</div>
+
+		<div class="dialog pawn-promotion" data-click="promote-pawn">
 			<piece class="queen"></piece>
 			<piece class="rook"></piece>
 			<piece class="bishop"></piece>
