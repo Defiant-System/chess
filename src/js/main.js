@@ -97,30 +97,6 @@ const chess = {
 			case "rotate-board":
 				el = self.board.parent();
 				orientation = el.data("orientation");
-
-				/*
-				if (orientation === "black") {
-					files = files.split("").reverse().join("");
-					ranks = ranks.split("").reverse().join("");
-				}
-				let flipFiles = files.split("").reverse().join(""),
-					flipRanks = ranks.split("").reverse().join("");
-
-				game.board().map((row, y) => {
-					row.map((square, x) => {
-						if (!square) return;
-						let pos = files.charAt(x) + ranks.charAt(y),
-							toPos = flipFiles.charAt(x) + flipRanks.charAt(y),
-							piece = self.board.find(`.${COLORS[square.color]}-${PIECES[square.type]}.pos-${pos}`);
-						
-						piece.cssSequence("moving to-"+ toPos, "transitionend", el => {
-								el.removeClass("moving to-"+ toPos +" pos-"+ pos)
-									.addClass("pos-"+ toPos);
-							});
-					});
-				});
-				*/
-
 				el.data("orientation", orientation === "white" ? "black" : "white");
 				break;
 			case "reset-board":
