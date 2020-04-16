@@ -27,7 +27,10 @@ const chess = {
 		//window.tabs.add("Second Game");
 
 		//let fen = "r1k4r/p2nb1p1/2b4p/1p1n1p2/2PP4/3Q1NB1/1P3PPP/R5K1 b - c3 0 19";
-		//let fen = "2n1r3/p1k2pp1/B1p3b1/P7/5bP1/2N1B3/1P2KP2/2R5 b - - 4 25";
+		
+		let fen = "2n1r3/p1k2pp1/B1p3b1/P7/5bP1/2N1B3/1P2KP2/2R5 b - - 4 25";
+		//let fen = "4r3/p2k1pp1/3n2b1/PN6/6P1/4P3/1P2K3/2R5 w - - 1 29";
+
 		//let fen = "r2qkbnr/ppp2ppp/2n5/1B2pQ2/4P3/8/PPP2PPP/RNB1K2R b KQkq - 3 7";
 		//let fen = "rnb1kbnr/pppp1ppp/8/4p3/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3"; // checkmate
 		//let fen = "4k3/4P3/4K3/8/8/8/8/8 b - - 0 78"; // draw
@@ -38,7 +41,7 @@ const chess = {
 		//let fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq e3 0 1";
 		//let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		//let fen = "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
-		let fen = "N3R3/1kPp4/8/6bp/8/8/PPP2PPP/R5K1 w - - 3 26";
+		//let fen = "N3R3/1kPp4/8/6bp/8/8/PPP2PPP/R5K1 w - - 3 26";
 		this.dispatch({ type: "game-from-fen", fen });
 
 		//let move = { from: "e2", to: "e4", color: "w", piece: "p" };
@@ -152,7 +155,7 @@ const chess = {
 					self.dispatch({ type: "after-move" });
 				}
 				// reset board
-				self.board.find(".move-to-pos, .active").removeClass("move-to-pos active");
+				self.board.find(".move-to-pos, .in-check, .active").removeClass("move-to-pos in-check active");
 				self.board.find(".move-from-pos, .can-move").remove();
 				// place holder
 				self.board.append(`<piece class="move-from-pos pos-${event.from}"></piece>`);
@@ -237,7 +240,7 @@ const chess = {
 				if (turnColor === "black") {
 					setTimeout(() => {
 						// simple ai move
-						let move = AI.makeBestMove();
+						let move = AI.makeBestMove(game);
 						self.dispatch({ ...move, type: "make-move" });
 					}, 500);
 				}
