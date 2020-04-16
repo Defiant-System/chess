@@ -11,7 +11,7 @@ const AI = {
 	},
 	getBestMove(game) {
 		this.positionCount = 0;
-		let depth = 3,
+		let depth = 2,
 			bestMove = this.minimaxRoot(depth, game, true);
 		return bestMove;
 	},
@@ -30,20 +30,14 @@ const AI = {
 		return piece.color === 'w' ? absoluteValue : -absoluteValue;
 	},
 	getAbsoluteValue(piece, isWhite, x ,y) {
-		if (piece.type === 'p') {
-			return 10 + ( isWhite ? EVAL.pawnWhite[y][x] : EVAL.pawnBlack[y][x] );
-		} else if (piece.type === 'r') {
-			return 50 + ( isWhite ? EVAL.rookWhite[y][x] : EVAL.rookBlack[y][x] );
-		} else if (piece.type === 'n') {
-			return 30 + EVAL.knight[y][x];
-		} else if (piece.type === 'b') {
-			return 30 + ( isWhite ? EVAL.bishopWhite[y][x] : EVAL.bishopBlack[y][x] );
-		} else if (piece.type === 'q') {
-			return 90 + EVAL.queen[y][x];
-		} else if (piece.type === 'k') {
-			return 900 + ( isWhite ? EVAL.kingWhite[y][x] : EVAL.kingBlack[y][x] );
+		switch (piece.type) {
+			case "p": return 10 + ( isWhite ? EVAL.pawnWhite[y][x] : EVAL.pawnBlack[y][x] );
+			case "r": return 50 + ( isWhite ? EVAL.rookWhite[y][x] : EVAL.rookBlack[y][x] );
+			case "n": return 30 + EVAL.knight[y][x];
+			case "b": return 30 + ( isWhite ? EVAL.bishopWhite[y][x] : EVAL.bishopBlack[y][x] );
+			case "q": return 90 + EVAL.queen[y][x];
+			case "k": return 900 + ( isWhite ? EVAL.kingWhite[y][x] : EVAL.kingBlack[y][x] );
 		}
-		throw "Unknown piece type: " + piece.type;
 	},
 	minimax(depth, game, alpha, beta, isMaximisingPlayer) {
 		this.positionCount++;

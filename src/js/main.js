@@ -91,6 +91,7 @@ const chess = {
 						htm.push(`<piece class="${COLORS[square.color]}-${PIECES[square.type]} pos-${pos}"></piece>`);
 					});
 				});
+
 				// update DOM
 				self.board.html(htm.join(""));
 
