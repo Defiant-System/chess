@@ -17,20 +17,53 @@ const PIECES = {
 	k: "king",
 };
 
-const games = {};
 let game;
+let history = [
+	    {
+	        "from": "e2",
+	        "to": "e4",
+	        "color": "w",
+	        "piece": "p",
+	        "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
+	    },
+	    {
+	        "color": "b",
+	        "from": "g8",
+	        "to": "f6",
+	        "flags": "n",
+	        "piece": "n",
+	        "san": "Nf6",
+	        "fen": "rnbqkb1r/pppppppp/5n2/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2"
+	    },
+	    {
+	        "from": "b1",
+	        "to": "c3",
+	        "color": "w",
+	        "piece": "n",
+	        "fen": "rnbqkb1r/pppppppp/5n2/8/4P3/2N5/PPPP1PPP/R1BQKBNR b KQkq - 2 2"
+	    },
+	    {
+	        "color": "b",
+	        "from": "b8",
+	        "to": "c6",
+	        "flags": "n",
+	        "piece": "n",
+	        "san": "Nc6",
+	        "fen": "r1bqkb1r/pppppppp/2n2n2/8/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq - 3 3"
+	    }
+	];
 
 const chess = {
 	init() {
 		// fast references
 		this.board = window.find(".board");
+		this.historyList = window.find(".move-history");
 		//window.tabs.add("Second Game");
 
-		//let fen = "r1k4r/p2nb1p1/2b4p/1p1n1p2/2PP4/3Q1NB1/1P3PPP/R5K1 b - c3 0 19";
-		
-		let fen = "2n1r3/p1k2pp1/B1p3b1/P7/5bP1/2N1B3/1P2KP2/2R5 b - - 4 25";
+		//let fen = "2n1r3/p1k2pp1/B1p3b1/P7/5bP1/2N1B3/1P2KP2/2R5 b - - 4 25";
 		//let fen = "4r3/p2k1pp1/3n2b1/PN6/6P1/4P3/1P2K3/2R5 w - - 1 29";
 
+		//let fen = "r1k4r/p2nb1p1/2b4p/1p1n1p2/2PP4/3Q1NB1/1P3PPP/R5K1 b - c3 0 19";
 		//let fen = "r2qkbnr/ppp2ppp/2n5/1B2pQ2/4P3/8/PPP2PPP/RNB1K2R b KQkq - 3 7";
 		//let fen = "rnb1kbnr/pppp1ppp/8/4p3/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3"; // checkmate
 		//let fen = "4k3/4P3/4K3/8/8/8/8/8 b - - 0 78"; // draw
@@ -39,10 +72,12 @@ const chess = {
 		//let fen = "4r3/5P2/2p5/1p5k/QP2p1R1/P1B5/2P2K1p/3r4 w - - 1 48";
 		//let fen = "r3k2r/p7/3b1p2/2NP3p/2Q5/8/PPPB1PPP/R3K2R w KQk - 1 17";
 		//let fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq e3 0 1";
-		//let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+		let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		//let fen = "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
 		//let fen = "N3R3/1kPp4/8/6bp/8/8/PPP2PPP/R5K1 w - - 3 26";
 		this.dispatch({ type: "game-from-fen", fen });
+
+		this.dispatch({ type: "populate-history-list" });
 
 		//let move = { from: "e2", to: "e4", color: "w", piece: "p" };
 		// let move = { from: "h6", to: "g6", color: "b", piece: "k" };
@@ -59,16 +94,21 @@ const chess = {
 			orientation,
 			files = FILES,
 			ranks = RANKS,
+			board,
 			square,
 			moves,
 			move,
 			name,
+			item,
 			htm,
 			el;
 		//console.log(event);
 		switch (event.type) {
 			case "output-fen-string":
 				console.log(game.fen());
+				break;
+			case "output-history-array":
+				console.log(JSON.stringify(history));
 				break;
 			case "do-option-button":
 				console.log(event);
@@ -96,7 +136,7 @@ const chess = {
 				self.board.html(htm.join(""));
 
 				// do stuff after move
-				self.dispatch({ type: "after-move" });
+			//	self.dispatch({ type: "after-move" });
 				break;
 			case "rotate-board":
 				el = self.board.parent();
@@ -206,11 +246,22 @@ const chess = {
 							self.board.find(`piece.pos-${res.to}.${COLORS[cc]}-${PIECES[res.captured]}`).remove();
 						}
 
-						self.dispatch({ type: "after-move" });
+						self.dispatch({ ...move, type: "after-move" });
 					});
 				break;
 			case "after-move":
 				let turnColor = COLORS[game.turn()];
+
+				if (event.from || event.to) {
+					move = event;
+					move.fen = game.fen();
+					delete move.type;
+					
+					history.push(move);
+
+					// update move history
+					self.historyList.append(`<span class="move"><piece class="${COLORS[event.color]}-${PIECES[event.piece]}"></piece>${event.to}</span>`);
+				}
 
 				// reset kings
 				self.board.find(".in-check").removeClass("in-check");
@@ -245,6 +296,57 @@ const chess = {
 						self.dispatch({ ...move, type: "make-move" });
 					}, 500);
 				}
+				break;
+			case "populate-history-list":
+				htm = history.map(entry => {
+					return `<span class="move"><piece class="${COLORS[entry.color]}-${PIECES[entry.piece]}"></piece>${entry.to}</span>`;
+				});
+				self.historyList.html(htm.join());
+				break;
+			case "history-entry-go":
+				el = $(event.target);
+				if (!el.hasClass("move")) return;
+
+				item = history[el.index()];
+				game.load(item.fen);
+				board = game.board();
+
+				orientation = self.board.parent().data("orientation");
+				if (orientation === "black") {
+					files = files.split("").reverse().join("");
+					ranks = ranks.split("").reverse().join("");
+				}
+
+				// reset board
+				self.board.find(".move-to-pos, .in-check, .active").removeClass("move-to-pos in-check active");
+				self.board.find(".move-from-pos, .can-move").remove();
+
+				let locked = [];
+
+				// lock pieces that doesn't need to move
+				board.map((row, y) => {
+					row.map((square, x) => {
+						if (!square) return;
+						let pos = files.charAt(x) + ranks.charAt(y),
+							piece = self.board.find(`.${COLORS[square.color]}-${PIECES[square.type]}.pos-${pos}`);
+						if (!piece.length) return;
+						piece.addClass("locked");
+						locked.push(pos);
+					});
+				});
+
+				board.map((row, y) => {
+					row.map((square, x) => {
+						let pos = files.charAt(x) + ranks.charAt(y);
+						if (!square || ~locked.indexOf(pos)) return;
+						
+						let piece = self.board.find(`.${COLORS[square.color]}-${PIECES[square.type]}:not(.locked)`);
+						piece.cssSequence("locked moving to-"+ pos, "transitionend", el => {
+							piece.removeClass("locked moving to-"+ pos)
+								.addClass("pos-"+ pos);
+						});
+					});
+				});
 				break;
 			case "promote-pawn":
 				name = event.name || event.target.className.split("-")[0];

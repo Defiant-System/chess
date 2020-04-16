@@ -19,4 +19,5 @@
 
 <Menu for="toolbar-config">
 	<Menu name="Fen String" click="output-fen-string"/>
+	<Menu name="History" click="output-history-array"/>
 </Menu>

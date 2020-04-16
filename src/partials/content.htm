@@ -82,14 +82,14 @@
 
 		<div class="tab-view_" sys-click="do-tab-row">
 			<div class="tab-row_">
-				<div class="tab-active_">Chat</div>
-				<div>Details</div>
+				<div>Chat</div>
+				<div class="tab-active_">Details</div>
 				<div>Notes</div>
 			</div>
 
 			<div class="tab-body_">
 				<!-- Chat -->
-				<div class="tab-chat tab-active_">
+				<div class="tab-chat">
 					<div class="chat-box">
 						<div class="transcript">
 							<div class="sent">This is the best chat interface ever</div>
@@ -119,22 +119,17 @@
 				</div>
 
 				<!-- Details -->
-				<div class="tab-details">
-					<div class="list-body">
-						<span class="index">1</span>
+				<div class="tab-details tab-active_">
+					<div class="list-body move-history" data-click="history-entry-go">
+						<!--
 						<span class="move"><piece class="white-rook"></piece>d2</span>
 						<span class="move"><piece class="black-queen"></piece>xb2</span>
-						<span class="index">2</span>
 						<span class="move"><piece class="white-pawn"></piece>b5</span>
 						<span class="move"><piece class="black-rook"></piece>h3</span>
-						<span class="index">3</span>
 						<span class="move"><piece class="white-knight"></piece>c1</span>
 						<span class="move"><piece class="black-rook"></piece>h3</span>
-						<span class="index">4</span>
 						<span class="move"><piece class="white-rook"></piece>d2</span>
-						<!--
 						<span class="move"><piece class="black-queen"></piece>xb2</span>
-						<span class="index">5</span>
 						<span class="move"><piece class="white-pawn"></piece>b5</span>
 						<span class="move"><piece class="black-rook"></piece>h3</span>
 						<span class="index">6</span>
