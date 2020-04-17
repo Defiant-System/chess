@@ -20,30 +20,21 @@ const PIECES = {
 
 let game;
 
-let pgn = [
-		'[Event "Casual Game"]',
-		'[Site "Berlin GER"]',
-		'[Date "1852.??.??"]',
-		'[EventDate "?"]',
-		'[Round "?"]',
-		'[Result "1-0"]',
-		'[White "Adolf Anderssen"]',
-		'[Black "Jean Dufresne"]',
-		'[ECO "C52"]',
-		'[WhiteElo "?"]',
-		'[BlackElo "?"]',
-		'[PlyCount "47"]',
-		'',
-		'1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.b4 Bxb4 5.c3 Ba5 6.d4 exd4 7.O-O',
-		'd3 8.Qb3 Qf6 9.e5 Qg6 10.Re1 Nge7 11.Ba3 b5 12.Qxb5 Rb8 13.Qa4',
-		'Bb6 14.Nbd2 Bb7 15.Ne4 Qf5 16.Bxd3 Qh5 17.Nf6+ gxf6 18.exf6',
-		'Rg8 19.Rad1 Qxf3 20.Rxe7+ Nxe7 21.Qxd7+ Kxd7 22.Bf5+ Ke8',
-	//	'23.Bd7+ Kf8 24.Bxe7# 1-0'
-		'23.Bd7+'
-	].join("\n");
+let pgn = `[Event "Reykjavik WCh"]
+[Site "Reykjavik WCh"]
+[Date "1972.07.11"]
+[EventDate "?"]
+[Round "1"]
+[Result "1-0"]
+[White "Boris Spassky"]
+[Black "Robert James Fischer"]
+[ECO "E56"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[PlyCount "111"]
 
-let moves = PGN.parse(pgn);
-console.log(moves);
+1. d4 Nf6 2. c4 e6 3. Nf3 d5 4. Nc3 Bb4 5. e3`;
+
 
 const chess = {
 	init() {
@@ -78,22 +69,6 @@ const chess = {
 		//this.dispatch({ type: "game-from-fen", fen });
 		this.dispatch({ type: "game-from-pgn", pgn });
 
-		/*
-		this.history.push({
-				"from": "c7",
-				"to": "c8",
-				"color": "w",
-				"piece": "p",
-				"promotion": "q",
-				"fen": "N1Q1R3/1k1p4/8/6bp/8/8/PPP2PPP/R5K1 b - - 0 26"
-			});
-		this.dispatch({ type: "populate-history-list" });
-		*/
-
-		//let move = { from: "e2", to: "e4", color: "w", piece: "p" };
-		// let move = { from: "h6", to: "g6", color: "b", piece: "k" };
-		// setTimeout(() => this.dispatch({ ...move, type: "make-move" }), 500);
-		
 		// let move = { from: "h7", to: "h8", color: "w", piece: "p" };
 		// console.log( this.isPromotion(move) );
 		
@@ -126,9 +101,20 @@ const chess = {
 				console.log( game.pgn() );
 				break;
 			case "game-from-pgn":
-				game = new Chess(event.fen);
+				// populate history
+				PGN.parse(pgn).map(move => self.history.push(move));
+				self.dispatch({ type: "render-history-list" });
+
+				game = new Chess();
 				game.load_pgn(event.pgn);
-				this.dispatch({ type: "game-from-fen", fen: game.fen() });
+				self.dispatch({ type: "game-from-fen", fen: game.fen() });
+
+				if (self.history.current) {
+					item = self.history.current;
+					self.el.board.append(`<piece class="move-from-pos pos-${item.from}"></piece>`);
+					self.el.board.find(`.pos-${item.to}`).addClass("active");
+					self.el.history.find(".move:last").addClass("active");
+				}
 				break;
 			case "game-from-fen":
 				el = self.el.board.parent();
@@ -277,7 +263,11 @@ const chess = {
 					self.history.push(move);
 
 					// update move history list
-					self.el.history.append(`<span class="move"><piece class="${COLORS[event.color]}-${PIECES[event.piece]}"></piece>${event.to}</span>`);
+					self.el.history
+						.append(`<span class="move"><piece class="${COLORS[event.color]}-${PIECES[event.piece]}"></piece>${event.to}</span>`)
+						.scrollTop(1e5);
+					
+					self.dispatch({ type: "update-history-list" });
 				}
 
 				// reset kings
@@ -314,33 +304,57 @@ const chess = {
 					}, 500);
 				}
 				break;
-			case "populate-history-list":
+			case "render-history-list":
 				htm = self.history.stack.map(entry => {
-					let isPromotion = self.isPromotion(entry),
-						piece = isPromotion ? entry.promotion : entry.piece;
+					let piece = entry.piece;
 					return `<span class="move"><piece class="${COLORS[entry.color]}-${PIECES[piece]}"></piece>${entry.to}</span>`;
 				});
-				self.el.history.html(htm.join());
+				self.el.history
+					.html(htm.join())
+					.scrollTop(1e5);
 				break;
-			case "history-go-start":
-			case "history-go-prev":
-			case "history-go-next":
-			case "history-go-end":
-				console.log(event);
+			case "update-history-list":
+				self.el.history.find(".active").removeClass("active");
+				self.el.history.find(".move").get(self.history.index).addClass("active");
+
+				self.el.hBtnStart.toggleClass("disabled", self.history.canGoBack);
+				self.el.hBtnPrev.toggleClass("disabled", self.history.canGoBack);
+				self.el.hBtnNext.toggleClass("disabled", self.history.canGoForward);
+				self.el.hBtnEnd.toggleClass("disabled", self.history.canGoForward);
 				break;
 			case "history-entry-go":
 				el = $(event.target);
 				if (!el.hasClass("move")) return;
-
+				self.history.go(el.index());
+				self.dispatch({ type: "history-entry-render" });
+				break;
+			case "history-go-start":
+				self.history.go(0);
+				self.dispatch({ type: "history-entry-render" });
+				break;
+			case "history-go-prev":
+				self.history.go(self.history.index - 1);
+				self.dispatch({ type: "history-entry-render" });
+				break;
+			case "history-go-next":
+				self.history.go(self.history.index + 1);
+				self.dispatch({ type: "history-entry-render" });
+				break;
+			case "history-go-end":
+				self.history.go(self.history.stack.length - 1);
+				self.dispatch({ type: "history-entry-render" });
+				break;
+			case "history-entry-render":
 				let locked = [],
-					historyItem = self.history.stack[el.index()];
-				console.log(historyItem);
+					historyItem = self.history.current;
+				//console.log(historyItem);
 				game.load(historyItem.fen);
 				board = game.board();
 
 				// reset board
 				self.el.board.find(".move-to-pos, .in-check, .active").removeClass("move-to-pos in-check active");
 				self.el.board.find(".move-from-pos, .can-move").remove();
+				self.dispatch({ type: "update-history-list" });
 
 				// populate ghost board
 				htm = [];
@@ -378,18 +392,22 @@ const chess = {
 						locked.push(selected.ghost.el);
 						
 						if (selected.distance === 0) return;
+
 						$(item.el).cssSequence("moving to-"+ newPos, "transitionend", el => {
 							el.removeClass(`moving to-${newPos} pos-${oldPos}`).addClass("pos-"+ newPos)
 
-							// check if this is last
+							/*/ check if this is last
 							if (i === matrix.length -1) {
 								self.el.board.append(`<piece class="move-from-pos pos-${historyItem.from}"></piece>`);
 								self.el.board.find(`.pos-${historyItem.to}`).addClass("active");
-							}
+							}*/
 						});
 					});
+			//	console.log("ghosts", ghosts.length);
+			//	console.log("matrix", matrix.length);
+			//	console.log("locked", locked.length);
 				// clear ghost board
-				self.el.ghost.html("");
+			//	self.el.ghost.html("");
 				break;
 			case "promote-pawn":
 				name = event.name || event.target.className.split("-")[0];

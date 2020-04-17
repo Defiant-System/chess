@@ -1,9 +1,6 @@
 <ToolBar>
 	<Group>
-		<Options>
-			<Tool symbol="icon-undo" state="disabled"/>
-			<Tool symbol="icon-redo" state="disabled"/>
-		</Options>
+		<Tool symbol="icon-undo" state="disabled"/>
 		<Tool symbol="icon-rotate" click="rotate-board"/>
 		<Options>
 			<Tool symbol="icon-blank"/>

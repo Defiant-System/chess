@@ -274,7 +274,11 @@ content {
 				cursor: pointer;
 				border-radius: 2px;
 
-				&:nth-child(odd){
+				&:first-child {
+					display: none;
+				}
+
+				&:nth-child(even) {
 					counter-increment: index;
 					margin-left: 1px;
 
@@ -282,9 +286,9 @@ content {
 						content: counter(index);
 						position: absolute;
 						top: 0;
-						bottom: 0;
-						left: -39px;
-						width: 30px;
+						bottom: -1px;
+						left: -40px;
+						width: 31px;
 						text-align: right;
 						padding-top: 7px;
 						padding-right: 7px;
@@ -456,7 +460,7 @@ content {
 		}
 	}
 
-	.ghost-pieces { opacity: 0; }
+	.ghost-pieces { opacity: 0.5; }
 
 	.board {
 		&.black-turn {
