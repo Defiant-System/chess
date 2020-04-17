@@ -33,7 +33,8 @@ let pgn = `[Event "Reykjavik WCh"]
 [BlackElo "?"]
 [PlyCount "111"]
 
-1. d4 Nf6 2. c4 e6 3. Nf3 d5 4. Nc3 Bb4 5. e3 O-O`;
+1. d4 Nf6 2. c4 e6 3. Nf3 d5 4. Nc3 Bb4 5. e3 O-O 6. Bd3 c5
+7. O-O Nc6 8. a3 Ba5 9. Ne2 dxc4`;
 
 
 const chess = {
@@ -388,28 +389,37 @@ const chess = {
 				matrix
 					.sort((a, b) => a.distances[0].distance - b.distances[0].distance)
 					.map((item, i) => {
-						let selected = item.distances.find(g => locked.indexOf(g.ghost.el) < 0),
-							oldPos = item.el.className.match(/pos-(\w\d)/)[1],
-							newPos = selected.ghost.el.className.match(/pos-(\w\d)/)[1];
-						locked.push(selected.ghost.el);
+						let selected = item.distances.find(g => locked.indexOf(g.ghost.el) < 0);
+						// remove captured pieces
+						if (!selected) {
+							matrix.splice(i, 1);
+							return item.el.parentNode.removeChild(item.el);
+						}
 						
+						let oldPos = item.el.className.match(/pos-(\w\d)/)[1],
+							newPos = selected.ghost.el.className.match(/pos-(\w\d)/)[1];
+						
+						locked.push(selected.ghost.el);
 						if (selected.distance === 0) return;
 
 						$(item.el).cssSequence("moving to-"+ newPos, "transitionend", el => {
 							el.removeClass(`moving to-${newPos} pos-${oldPos}`).addClass("pos-"+ newPos)
 
-							/*/ check if this is last
-							if (i === matrix.length -1) {
+							// check if this is last
+							if (i === matrix.length - 1 && historyItem.from && historyItem.to) {
 								self.el.board.append(`<piece class="move-from-pos pos-${historyItem.from}"></piece>`);
 								self.el.board.find(`.pos-${historyItem.to}`).addClass("active");
-							}*/
+							}
 						});
 					});
-			//	console.log("ghosts", ghosts);
-			//	console.log("matrix", matrix.length);
-			//	console.log("locked", locked.length);
+
+				// add missing pieces
+				ghosts
+					.filter(item => !~locked.indexOf(item.el))
+					.map(item => self.el.board[0].appendChild(item.el.cloneNode()));
+
 				// clear ghost board
-				self.el.ghost.html("");
+			//	self.el.ghost.html("");
 				break;
 			case "promote-pawn":
 				name = event.name || event.target.className.split("-")[0];
