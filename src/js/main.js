@@ -33,7 +33,7 @@ let pgn = `[Event "Reykjavik WCh"]
 [BlackElo "?"]
 [PlyCount "111"]
 
-1. d4 Nf6 2. c4 e6 3. Nf3 d5 4. Nc3 Bb4 5. e3`;
+1. d4 Nf6 2. c4 e6 3. Nf3 d5 4. Nc3 Bb4 5. e3 O-O`;
 
 
 const chess = {
@@ -374,12 +374,14 @@ const chess = {
 				});
 				let matrix = self.el.board.find("piece").map(el => {
 					let rect = el.getBoundingClientRect(),
-						// measure distances
-						dists = ghosts.map(ghost => {
-							let distance = Math.hypot(ghost.rect.left - rect.left, ghost.rect.top - rect.top);
-							return { ghost, distance };
-						});
-					return { el, distances: dists.sort((a, b) => a.distance - b.distance) };
+						distances = ghosts // measure distances
+							.filter(ghost => ghost.el.className.split(" ")[0] === el.className.split(" ")[0])
+							.map(ghost => {
+								let distance = Math.hypot(ghost.rect.left - rect.left, ghost.rect.top - rect.top);
+								return { ghost, distance };
+							})
+							.sort((a, b) => a.distance - b.distance);
+					return { el, distances };
 				});
 
 				// iterate distance matrix
@@ -403,11 +405,11 @@ const chess = {
 							}*/
 						});
 					});
-			//	console.log("ghosts", ghosts.length);
+			//	console.log("ghosts", ghosts);
 			//	console.log("matrix", matrix.length);
 			//	console.log("locked", locked.length);
 				// clear ghost board
-			//	self.el.ghost.html("");
+				self.el.ghost.html("");
 				break;
 			case "promote-pawn":
 				name = event.name || event.target.className.split("-")[0];
