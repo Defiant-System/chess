@@ -60,6 +60,10 @@ const chess = {
 			board: window.find(".board"),
 			ghost: window.find(".ghost-pieces"),
 			history: window.find(".move-history"),
+			hBtnStart: window.find("[data-click='history-go-start']"),
+			hBtnPrev: window.find("[data-click='history-go-prev']"),
+			hBtnNext: window.find("[data-click='history-go-next']"),
+			hBtnEnd: window.find("[data-click='history-go-end']"),
 		};
 		//window.tabs.add("Second Game");
 
@@ -312,15 +316,10 @@ const chess = {
 				el = $(event.target);
 				if (!el.hasClass("move")) return;
 
-				item = history[el.index()];
-				game.load(item.fen);
+				let locked = [],
+					historyItem = history[el.index()];
+				game.load(historyItem.fen);
 				board = game.board();
-
-				orientation = self.el.board.parent().data("orientation");
-				if (orientation === "black") {
-					files = files.split("").reverse().join("");
-					ranks = ranks.split("").reverse().join("");
-				}
 
 				// reset board
 				self.el.board.find(".move-to-pos, .in-check, .active").removeClass("move-to-pos in-check active");
@@ -338,7 +337,6 @@ const chess = {
 				// update DOM
 				self.el.ghost.html(htm.join(""));
 
-				let locked = [];
 				let ghosts = self.el.ghost.find("piece").map(el => {
 					let rect = el.getBoundingClientRect();
 					return { el, rect };
@@ -356,18 +354,24 @@ const chess = {
 				// iterate distance matrix
 				matrix
 					.sort((a, b) => a.distances[0].distance - b.distances[0].distance)
-					.map(item => {
-						let selected = item.distances.find(g => locked.indexOf(g.ghost.el) < 0);
-						let oldPos = item.el.className.match(/pos-(\w\d)/)[1],
+					.map((item, i) => {
+						let selected = item.distances.find(g => locked.indexOf(g.ghost.el) < 0),
+							oldPos = item.el.className.match(/pos-(\w\d)/)[1],
 							newPos = selected.ghost.el.className.match(/pos-(\w\d)/)[1];
 						locked.push(selected.ghost.el);
 						
 						if (selected.distance === 0) return;
 						$(item.el).cssSequence("moving to-"+ newPos, "transitionend", el => {
-							el.removeClass(`moving to-${newPos} pos-${oldPos}`).addClass("pos-"+ newPos);
+							el.removeClass(`moving to-${newPos} pos-${oldPos}`).addClass("pos-"+ newPos)
+
+							// check if this is last
+							if (i === matrix.length -1) {
+								self.el.board.append(`<piece class="move-from-pos pos-${historyItem.from}"></piece>`);
+								self.el.board.find(`.pos-${historyItem.to}`).addClass("active");
+							}
 						});
 					});
-
+				// clear ghost board
 				self.el.ghost.html("");
 				break;
 			case "promote-pawn":
