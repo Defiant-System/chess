@@ -19,5 +19,6 @@
 
 <Menu for="toolbar-config">
 	<Menu name="Fen String" click="output-fen-string"/>
+	<Menu name="Portable Game Notation" click="output-game-pgn"/>
 	<Menu name="History" click="output-history-array"/>
 </Menu>

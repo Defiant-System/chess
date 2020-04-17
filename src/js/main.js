@@ -1,6 +1,7 @@
 
 ant_require("modules/chess.0.10.3.js");
 ant_require("modules/chess-ai.js");
+ant_require("modules/pgn-parser.js");
 
 const FILES = "abcdefgh";
 const RANKS = "87654321";
@@ -18,129 +19,6 @@ const PIECES = {
 };
 
 let game;
-let history = [
-		{
-			"from": "e2",
-			"to": "e4",
-			"color": "w",
-			"piece": "p",
-			"fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
-		},
-		{
-			"color": "b",
-			"from": "g8",
-			"to": "f6",
-			"flags": "n",
-			"piece": "n",
-			"san": "Nf6",
-			"fen": "rnbqkb1r/pppppppp/5n2/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2"
-		},
-		{
-			"from": "b1",
-			"to": "c3",
-			"color": "w",
-			"piece": "n",
-			"fen": "rnbqkb1r/pppppppp/5n2/8/4P3/2N5/PPPP1PPP/R1BQKBNR b KQkq - 2 2"
-		},
-		{
-			"color": "b",
-			"from": "b8",
-			"to": "c6",
-			"flags": "n",
-			"piece": "n",
-			"san": "Nc6",
-			"fen": "r1bqkb1r/pppppppp/2n2n2/8/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq - 3 3"
-		},
-		{
-			"from": "f2",
-			"to": "f3",
-			"color": "w",
-			"piece": "p",
-			"fen": "N3R3/1kPp4/8/6bp/8/5P2/PPP3PP/R5K1 b - - 0 26"
-		},
-		{
-			"color": "b",
-			"from": "g5",
-			"to": "e3",
-			"flags": "n",
-			"piece": "b",
-			"san": "Be3+",
-			"fen": "N3R3/1kPp4/8/7p/8/4bP2/PPP3PP/R5K1 w - - 1 27"
-		},
-		{
-			"from": "g1",
-			"to": "f1",
-			"color": "w",
-			"piece": "k",
-			"fen": "N3R3/1kPp4/8/7p/8/4bP2/PPP3PP/R4K2 b - - 2 27"
-		},
-		{
-			"color": "b",
-			"from": "d7",
-			"to": "d5",
-			"flags": "b",
-			"piece": "p",
-			"san": "d5",
-			"fen": "N3R3/1kP5/8/3p3p/8/4bP2/PPP3PP/R4K2 w - d6 0 28"
-		},
-		{
-			"from": "e8",
-			"to": "e3",
-			"color": "w",
-			"piece": "r",
-			"fen": "N7/1kP5/8/3p3p/8/4RP2/PPP3PP/R4K2 b - - 0 28"
-		},
-		{
-			"color": "b",
-			"from": "b7",
-			"to": "c8",
-			"flags": "n",
-			"piece": "k",
-			"san": "Kc8",
-			"fen": "N1k5/2P5/8/3p3p/8/4RP2/PPP3PP/R4K2 w - - 1 29"
-		},
-		{
-			"from": "e3",
-			"to": "e8",
-			"color": "w",
-			"piece": "r",
-			"fen": "N1k1R3/2P5/8/3p3p/8/5P2/PPP3PP/R4K2 b - - 2 29"
-		},
-		{
-			"color": "b",
-			"from": "c8",
-			"to": "b7",
-			"flags": "n",
-			"piece": "k",
-			"san": "Kb7",
-			"fen": "N3R3/1kP5/8/3p3p/8/5P2/PPP3PP/R4K2 w - - 3 30"
-		},
-		{
-			"color": "b",
-			"from": "b7",
-			"to": "a7",
-			"flags": "n",
-			"piece": "k",
-			"san": "Ka7",
-			"fen": "N1Q1R3/k7/8/3p3p/8/5P2/PPP3PP/R4K2 w - - 1 31"
-		},
-		{
-			"from": "c8",
-			"to": "b8",
-			"color": "w",
-			"piece": "q",
-			"fen": "NQ2R3/k7/8/3p3p/8/5P2/PPP3PP/R4K2 b - - 2 31"
-		},
-		{
-			"color": "b",
-			"from": "a7",
-			"to": "a6",
-			"flags": "n",
-			"piece": "k",
-			"san": "Ka6",
-			"fen": "NQ2R3/8/k7/3p3p/8/5P2/PPP3PP/R4K2 w - - 3 32"
-		}
-	];
 
 let pgn = [
 		'[Event "Casual Game"]',
@@ -160,8 +38,12 @@ let pgn = [
 		'd3 8.Qb3 Qf6 9.e5 Qg6 10.Re1 Nge7 11.Ba3 b5 12.Qxb5 Rb8 13.Qa4',
 		'Bb6 14.Nbd2 Bb7 15.Ne4 Qf5 16.Bxd3 Qh5 17.Nf6+ gxf6 18.exf6',
 		'Rg8 19.Rad1 Qxf3 20.Rxe7+ Nxe7 21.Qxd7+ Kxd7 22.Bf5+ Ke8',
-		'23.Bd7+ Kf8 24.Bxe7# 1-0'
+	//	'23.Bd7+ Kf8 24.Bxe7# 1-0'
+		'23.Bd7+'
 	].join("\n");
+
+let moves = PGN.parse(pgn);
+console.log(moves);
 
 const chess = {
 	init() {
@@ -175,11 +57,12 @@ const chess = {
 			hBtnNext: window.find("[data-click='history-go-next']"),
 			hBtnEnd: window.find("[data-click='history-go-end']"),
 		};
+		// create history stack
+		this.history = new window.History;
 		//window.tabs.add("Second Game");
 
 		//let fen = "2n1r3/p1k2pp1/B1p3b1/P7/5bP1/2N1B3/1P2KP2/2R5 b - - 4 25";
 		//let fen = "4r3/p2k1pp1/3n2b1/PN6/6P1/4P3/1P2K3/2R5 w - - 1 29";
-
 		//let fen = "r1k4r/p2nb1p1/2b4p/1p1n1p2/2PP4/3Q1NB1/1P3PPP/R5K1 b - c3 0 19";
 		//let fen = "r2qkbnr/ppp2ppp/2n5/1B2pQ2/4P3/8/PPP2PPP/RNB1K2R b KQkq - 3 7";
 		//let fen = "rnb1kbnr/pppp1ppp/8/4p3/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3"; // checkmate
@@ -191,11 +74,21 @@ const chess = {
 		//let fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq e3 0 1";
 		//let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		//let fen = "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
-		let fen = "N3R3/1kPp4/8/6bp/8/8/PPP2PPP/R5K1 w - - 3 26";
-		this.dispatch({ type: "game-from-fen", fen });
-		//this.dispatch({ type: "game-from-pgn", pgn });
+		//let fen = "N3R3/1kPp4/8/6bp/8/8/PPP2PPP/R5K1 w - - 3 26";
+		//this.dispatch({ type: "game-from-fen", fen });
+		this.dispatch({ type: "game-from-pgn", pgn });
 
+		/*
+		this.history.push({
+				"from": "c7",
+				"to": "c8",
+				"color": "w",
+				"piece": "p",
+				"promotion": "q",
+				"fen": "N1Q1R3/1k1p4/8/6bp/8/8/PPP2PPP/R5K1 b - - 0 26"
+			});
 		this.dispatch({ type: "populate-history-list" });
+		*/
 
 		//let move = { from: "e2", to: "e4", color: "w", piece: "p" };
 		// let move = { from: "h6", to: "g6", color: "b", piece: "k" };
@@ -226,8 +119,11 @@ const chess = {
 				console.log(game.fen());
 				break;
 			case "output-history-array":
-				console.log(JSON.stringify(history));
+				console.log(JSON.stringify(self.history.stack));
 				//console.log( game.history({ verbose: true }) );
+				break;
+			case "output-game-pgn":
+				console.log( game.pgn() );
 				break;
 			case "game-from-pgn":
 				game = new Chess(event.fen);
@@ -256,7 +152,7 @@ const chess = {
 				self.el.board.html(htm.join(""));
 
 				// do stuff after move
-			//	self.dispatch({ type: "after-move" });
+				self.dispatch({ type: "after-move" });
 				break;
 			case "rotate-board":
 				el = self.el.board.parent();
@@ -377,9 +273,10 @@ const chess = {
 					move.fen = game.fen();
 					delete move.type;
 					
-					history.push(move);
+					// push move to history
+					self.history.push(move);
 
-					// update move history
+					// update move history list
 					self.el.history.append(`<span class="move"><piece class="${COLORS[event.color]}-${PIECES[event.piece]}"></piece>${event.to}</span>`);
 				}
 
@@ -413,13 +310,15 @@ const chess = {
 					setTimeout(() => {
 						// simple ai move
 						let move = AI.makeBestMove(game);
-						self.dispatch({ ...move, type: "make-move" });
+						//self.dispatch({ ...move, type: "make-move" });
 					}, 500);
 				}
 				break;
 			case "populate-history-list":
-				htm = history.map(entry => {
-					return `<span class="move"><piece class="${COLORS[entry.color]}-${PIECES[entry.piece]}"></piece>${entry.to}</span>`;
+				htm = self.history.stack.map(entry => {
+					let isPromotion = self.isPromotion(entry),
+						piece = isPromotion ? entry.promotion : entry.piece;
+					return `<span class="move"><piece class="${COLORS[entry.color]}-${PIECES[piece]}"></piece>${entry.to}</span>`;
 				});
 				self.el.history.html(htm.join());
 				break;
@@ -434,7 +333,8 @@ const chess = {
 				if (!el.hasClass("move")) return;
 
 				let locked = [],
-					historyItem = history[el.index()];
+					historyItem = self.history.stack[el.index()];
+				console.log(historyItem);
 				game.load(historyItem.fen);
 				board = game.board();
 
@@ -511,7 +411,7 @@ const chess = {
 				piece.prop("className", `${COLORS[move.color]}-${name} pos-${move.to}`);
 				piece.addClass("active");
 
-				self.dispatch({ type: "after-move" });
+				self.dispatch({ ...move, type: "after-move" });
 				break;
 		}
 	},

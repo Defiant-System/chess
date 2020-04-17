@@ -296,8 +296,12 @@ content {
 					}
 				}
 
-				&:hover {
+				&:hover:not(.active) {
 					background: #eee;
+				}
+
+				&.active {
+					background: #9c52b980;
 				}
 				
 				piece {
