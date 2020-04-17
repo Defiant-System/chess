@@ -19,39 +19,149 @@ const PIECES = {
 
 let game;
 let history = [
-	    {
-	        "from": "e2",
-	        "to": "e4",
-	        "color": "w",
-	        "piece": "p",
-	        "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
-	    },
-	    {
-	        "color": "b",
-	        "from": "g8",
-	        "to": "f6",
-	        "flags": "n",
-	        "piece": "n",
-	        "san": "Nf6",
-	        "fen": "rnbqkb1r/pppppppp/5n2/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2"
-	    },
-	    {
-	        "from": "b1",
-	        "to": "c3",
-	        "color": "w",
-	        "piece": "n",
-	        "fen": "rnbqkb1r/pppppppp/5n2/8/4P3/2N5/PPPP1PPP/R1BQKBNR b KQkq - 2 2"
-	    },
-	    {
-	        "color": "b",
-	        "from": "b8",
-	        "to": "c6",
-	        "flags": "n",
-	        "piece": "n",
-	        "san": "Nc6",
-	        "fen": "r1bqkb1r/pppppppp/2n2n2/8/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq - 3 3"
-	    }
+		{
+			"from": "e2",
+			"to": "e4",
+			"color": "w",
+			"piece": "p",
+			"fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
+		},
+		{
+			"color": "b",
+			"from": "g8",
+			"to": "f6",
+			"flags": "n",
+			"piece": "n",
+			"san": "Nf6",
+			"fen": "rnbqkb1r/pppppppp/5n2/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2"
+		},
+		{
+			"from": "b1",
+			"to": "c3",
+			"color": "w",
+			"piece": "n",
+			"fen": "rnbqkb1r/pppppppp/5n2/8/4P3/2N5/PPPP1PPP/R1BQKBNR b KQkq - 2 2"
+		},
+		{
+			"color": "b",
+			"from": "b8",
+			"to": "c6",
+			"flags": "n",
+			"piece": "n",
+			"san": "Nc6",
+			"fen": "r1bqkb1r/pppppppp/2n2n2/8/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq - 3 3"
+		},
+		{
+			"from": "f2",
+			"to": "f3",
+			"color": "w",
+			"piece": "p",
+			"fen": "N3R3/1kPp4/8/6bp/8/5P2/PPP3PP/R5K1 b - - 0 26"
+		},
+		{
+			"color": "b",
+			"from": "g5",
+			"to": "e3",
+			"flags": "n",
+			"piece": "b",
+			"san": "Be3+",
+			"fen": "N3R3/1kPp4/8/7p/8/4bP2/PPP3PP/R5K1 w - - 1 27"
+		},
+		{
+			"from": "g1",
+			"to": "f1",
+			"color": "w",
+			"piece": "k",
+			"fen": "N3R3/1kPp4/8/7p/8/4bP2/PPP3PP/R4K2 b - - 2 27"
+		},
+		{
+			"color": "b",
+			"from": "d7",
+			"to": "d5",
+			"flags": "b",
+			"piece": "p",
+			"san": "d5",
+			"fen": "N3R3/1kP5/8/3p3p/8/4bP2/PPP3PP/R4K2 w - d6 0 28"
+		},
+		{
+			"from": "e8",
+			"to": "e3",
+			"color": "w",
+			"piece": "r",
+			"fen": "N7/1kP5/8/3p3p/8/4RP2/PPP3PP/R4K2 b - - 0 28"
+		},
+		{
+			"color": "b",
+			"from": "b7",
+			"to": "c8",
+			"flags": "n",
+			"piece": "k",
+			"san": "Kc8",
+			"fen": "N1k5/2P5/8/3p3p/8/4RP2/PPP3PP/R4K2 w - - 1 29"
+		},
+		{
+			"from": "e3",
+			"to": "e8",
+			"color": "w",
+			"piece": "r",
+			"fen": "N1k1R3/2P5/8/3p3p/8/5P2/PPP3PP/R4K2 b - - 2 29"
+		},
+		{
+			"color": "b",
+			"from": "c8",
+			"to": "b7",
+			"flags": "n",
+			"piece": "k",
+			"san": "Kb7",
+			"fen": "N3R3/1kP5/8/3p3p/8/5P2/PPP3PP/R4K2 w - - 3 30"
+		},
+		{
+			"color": "b",
+			"from": "b7",
+			"to": "a7",
+			"flags": "n",
+			"piece": "k",
+			"san": "Ka7",
+			"fen": "N1Q1R3/k7/8/3p3p/8/5P2/PPP3PP/R4K2 w - - 1 31"
+		},
+		{
+			"from": "c8",
+			"to": "b8",
+			"color": "w",
+			"piece": "q",
+			"fen": "NQ2R3/k7/8/3p3p/8/5P2/PPP3PP/R4K2 b - - 2 31"
+		},
+		{
+			"color": "b",
+			"from": "a7",
+			"to": "a6",
+			"flags": "n",
+			"piece": "k",
+			"san": "Ka6",
+			"fen": "NQ2R3/8/k7/3p3p/8/5P2/PPP3PP/R4K2 w - - 3 32"
+		}
 	];
+
+let pgn = [
+		'[Event "Casual Game"]',
+		'[Site "Berlin GER"]',
+		'[Date "1852.??.??"]',
+		'[EventDate "?"]',
+		'[Round "?"]',
+		'[Result "1-0"]',
+		'[White "Adolf Anderssen"]',
+		'[Black "Jean Dufresne"]',
+		'[ECO "C52"]',
+		'[WhiteElo "?"]',
+		'[BlackElo "?"]',
+		'[PlyCount "47"]',
+		'',
+		'1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.b4 Bxb4 5.c3 Ba5 6.d4 exd4 7.O-O',
+		'd3 8.Qb3 Qf6 9.e5 Qg6 10.Re1 Nge7 11.Ba3 b5 12.Qxb5 Rb8 13.Qa4',
+		'Bb6 14.Nbd2 Bb7 15.Ne4 Qf5 16.Bxd3 Qh5 17.Nf6+ gxf6 18.exf6',
+		'Rg8 19.Rad1 Qxf3 20.Rxe7+ Nxe7 21.Qxd7+ Kxd7 22.Bf5+ Ke8',
+		'23.Bd7+ Kf8 24.Bxe7# 1-0'
+	].join("\n");
 
 const chess = {
 	init() {
@@ -79,10 +189,11 @@ const chess = {
 		//let fen = "4r3/5P2/2p5/1p5k/QP2p1R1/P1B5/2P2K1p/3r4 w - - 1 48";
 		//let fen = "r3k2r/p7/3b1p2/2NP3p/2Q5/8/PPPB1PPP/R3K2R w KQk - 1 17";
 		//let fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq e3 0 1";
-		let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+		//let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		//let fen = "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
-		//let fen = "N3R3/1kPp4/8/6bp/8/8/PPP2PPP/R5K1 w - - 3 26";
+		let fen = "N3R3/1kPp4/8/6bp/8/8/PPP2PPP/R5K1 w - - 3 26";
 		this.dispatch({ type: "game-from-fen", fen });
+		//this.dispatch({ type: "game-from-pgn", pgn });
 
 		this.dispatch({ type: "populate-history-list" });
 
@@ -116,6 +227,12 @@ const chess = {
 				break;
 			case "output-history-array":
 				console.log(JSON.stringify(history));
+				//console.log( game.history({ verbose: true }) );
+				break;
+			case "game-from-pgn":
+				game = new Chess(event.fen);
+				game.load_pgn(event.pgn);
+				this.dispatch({ type: "game-from-fen", fen: game.fen() });
 				break;
 			case "game-from-fen":
 				el = self.el.board.parent();
