@@ -40,6 +40,7 @@
 			<piece class="can-move pos-e4"></piece>
 			<piece class="can-move pos-e3"></piece>-->
 		</div>
+		<div class="ghost-pieces"></div>
 
 		<coords class="ranks">
 			<coord>1</coord>
@@ -173,11 +174,11 @@
 						<span class="move"><piece class="black-rook"></piece>h3</span>-->
 					</div>
 
-					<span class="option-buttons_" data-click="do-option-button">
-						<span><i class="icon-to-start"></i></span>
-						<span><i class="icon-previous"></i></span>
-						<span class="disabled"><i class="icon-next"></i></span>
-						<span class="disabled"><i class="icon-to-end"></i></span>
+					<span class="option-buttons_">
+						<span data-click="history-go-start"><i class="icon-to-start"></i></span>
+						<span data-click="history-go-prev"><i class="icon-previous"></i></span>
+						<span data-click="history-go-next" class="disabled"><i class="icon-next"></i></span>
+						<span data-click="history-go-end" class="disabled"><i class="icon-to-end"></i></span>
 					</span>
 
 					<!--

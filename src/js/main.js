@@ -56,8 +56,11 @@ let history = [
 const chess = {
 	init() {
 		// fast references
-		this.board = window.find(".board");
-		this.historyList = window.find(".move-history");
+		this.el = {
+			board: window.find(".board"),
+			ghost: window.find(".ghost-pieces"),
+			history: window.find(".move-history"),
+		};
 		//window.tabs.add("Second Game");
 
 		//let fen = "2n1r3/p1k2pp1/B1p3b1/P7/5bP1/2N1B3/1P2KP2/2R5 b - - 4 25";
@@ -110,13 +113,10 @@ const chess = {
 			case "output-history-array":
 				console.log(JSON.stringify(history));
 				break;
-			case "do-option-button":
-				console.log(event);
-				break;
 			case "game-from-fen":
-				el = self.board.parent();
+				el = self.el.board.parent();
 				game = new Chess(event.fen);
-				orientation = self.board.parent().data("orientation");
+				orientation = self.el.board.parent().data("orientation");
 
 				if (orientation === "black") {
 					files = files.split("").reverse().join("");
@@ -131,22 +131,21 @@ const chess = {
 						htm.push(`<piece class="${COLORS[square.color]}-${PIECES[square.type]} pos-${pos}"></piece>`);
 					});
 				});
-
 				// update DOM
-				self.board.html(htm.join(""));
+				self.el.board.html(htm.join(""));
 
 				// do stuff after move
 			//	self.dispatch({ type: "after-move" });
 				break;
 			case "rotate-board":
-				el = self.board.parent();
+				el = self.el.board.parent();
 				orientation = el.data("orientation");
 				el.data("orientation", orientation === "white" ? "black" : "white");
 				break;
 			case "reset-board":
-				self.board.find(".active, .castling-rook").removeClass("active castling-rook");
-				self.board.find(".can-move").remove();
-				self.board.removeClass("can-move-squares");
+				self.el.board.find(".active, .castling-rook").removeClass("active castling-rook");
+				self.el.board.find(".can-move").remove();
+				self.el.board.removeClass("can-move-squares");
 				break;
 			case "focus-piece":
 				el = $(event.target);
@@ -164,7 +163,7 @@ const chess = {
 				}
 				
 				if (name.startsWith("can-move pos-")) {
-					el = self.board.find(".active");
+					el = self.el.board.find(".active");
 					name = el.prop("className");
 
 					move = {
@@ -176,7 +175,7 @@ const chess = {
 					return self.dispatch({ ...move, type: "make-move" });
 				}
 
-				self.board.find(".active").removeClass("active");
+				self.el.board.find(".active").removeClass("active");
 				el.addClass("active");
 				moves = game.moves({ square, verbose: true });
 
@@ -189,21 +188,21 @@ const chess = {
 					htm.push(`<piece class="can-move pos-${castle.from} castling-rook" data-from="${move.from}" data-to="${move.to}" data-color="${move.color}"></piece>`);
 				});
 
-				self.board.addClass("can-move-squares").prepend(htm.join(""));
+				self.el.board.addClass("can-move-squares").prepend(htm.join(""));
 				break;
 			case "make-move":
 				if (!event.from || !event.to) {
 					self.dispatch({ type: "after-move" });
 				}
 				// reset board
-				self.board.find(".move-to-pos, .in-check, .active").removeClass("move-to-pos in-check active");
-				self.board.find(".move-from-pos, .can-move").remove();
+				self.el.board.find(".move-to-pos, .in-check, .active").removeClass("move-to-pos in-check active");
+				self.el.board.find(".move-from-pos, .can-move").remove();
 				// place holder
-				self.board.append(`<piece class="move-from-pos pos-${event.from}"></piece>`);
+				self.el.board.append(`<piece class="move-from-pos pos-${event.from}"></piece>`);
 
 				let castle = self.isCastling(event);
 				if (castle) {
-					self.board
+					self.el.board
 						.find(`.${COLORS[castle.color]}-${PIECES[castle.piece]}.pos-${castle.from}`)
 						.cssSequence("moving to-"+ castle.to, "transitionend", el => {
 								el.removeClass("moving to-"+ castle.to +" pos-"+ castle.from)
@@ -211,7 +210,7 @@ const chess = {
 							});
 				}
 
-				piece = self.board.find(`.${COLORS[event.color]}-${PIECES[event.piece]}.pos-${event.from}`);
+				piece = self.el.board.find(`.${COLORS[event.color]}-${PIECES[event.piece]}.pos-${event.from}`);
 
 				piece.cssSequence("moving to-"+ event.to, "transitionend", el => {
 						el.addClass("active")
@@ -227,7 +226,7 @@ const chess = {
 							// clean up move object
 							delete move.type;
 							// hide possible captured piece
-							self.board.find(`piece.pos-${move.to}:not(.${COLORS[move.color]}-${PIECES[move.piece]})`).addClass("hidden");
+							self.el.board.find(`piece.pos-${move.to}:not(.${COLORS[move.color]}-${PIECES[move.piece]})`).addClass("hidden");
 
 							// if move made by AI
 							if (move.color === "b") {
@@ -236,14 +235,14 @@ const chess = {
 							}
 							
 							// show lightbox
-							return self.board.parent().addClass("show-pawn-promotion");
+							return self.el.board.parent().addClass("show-pawn-promotion");
 						}
 
 						let res = game.move(move);
 						if (res && res.captured) {
 							let cc = res.color === "w" ? "b" : "w";
 							// remove captured piece
-							self.board.find(`piece.pos-${res.to}.${COLORS[cc]}-${PIECES[res.captured]}`).remove();
+							self.el.board.find(`piece.pos-${res.to}.${COLORS[cc]}-${PIECES[res.captured]}`).remove();
 						}
 
 						self.dispatch({ ...move, type: "after-move" });
@@ -260,14 +259,14 @@ const chess = {
 					history.push(move);
 
 					// update move history
-					self.historyList.append(`<span class="move"><piece class="${COLORS[event.color]}-${PIECES[event.piece]}"></piece>${event.to}</span>`);
+					self.el.history.append(`<span class="move"><piece class="${COLORS[event.color]}-${PIECES[event.piece]}"></piece>${event.to}</span>`);
 				}
 
 				// reset kings
-				self.board.find(".in-check").removeClass("in-check");
+				self.el.board.find(".in-check").removeClass("in-check");
 
 				if (game.in_check()) {
-					self.board.find(`.${turnColor}-king`).addClass("in-check");
+					self.el.board.find(`.${turnColor}-king`).addClass("in-check");
 				}
 				if (game.in_checkmate()) {
 					return console.log("check mate");
@@ -283,11 +282,11 @@ const chess = {
 				window.title = `Chess (${turnColor} turn)`;
 
 				// reset board
-				self.board
+				self.el.board
 					.removeClass("can-move-squares white-turn black-turn")
 					.addClass(`${turnColor}-turn`);
 				// remove previous possible moves
-				self.board.find(".move-to-pos, .castling-rook").removeClass("move-to-pos castling-rook");
+				self.el.board.find(".move-to-pos, .castling-rook").removeClass("move-to-pos castling-rook");
 
 				if (turnColor === "black") {
 					setTimeout(() => {
@@ -301,7 +300,13 @@ const chess = {
 				htm = history.map(entry => {
 					return `<span class="move"><piece class="${COLORS[entry.color]}-${PIECES[entry.piece]}"></piece>${entry.to}</span>`;
 				});
-				self.historyList.html(htm.join());
+				self.el.history.html(htm.join());
+				break;
+			case "history-go-start":
+			case "history-go-prev":
+			case "history-go-next":
+			case "history-go-end":
+				console.log(event);
 				break;
 			case "history-entry-go":
 				el = $(event.target);
@@ -311,42 +316,59 @@ const chess = {
 				game.load(item.fen);
 				board = game.board();
 
-				orientation = self.board.parent().data("orientation");
+				orientation = self.el.board.parent().data("orientation");
 				if (orientation === "black") {
 					files = files.split("").reverse().join("");
 					ranks = ranks.split("").reverse().join("");
 				}
 
 				// reset board
-				self.board.find(".move-to-pos, .in-check, .active").removeClass("move-to-pos in-check active");
-				self.board.find(".move-from-pos, .can-move").remove();
+				self.el.board.find(".move-to-pos, .in-check, .active").removeClass("move-to-pos in-check active");
+				self.el.board.find(".move-from-pos, .can-move").remove();
 
-				let locked = [];
-
-				// lock pieces that doesn't need to move
+				// populate ghost board
+				htm = [];
 				board.map((row, y) => {
 					row.map((square, x) => {
 						if (!square) return;
-						let pos = files.charAt(x) + ranks.charAt(y),
-							piece = self.board.find(`.${COLORS[square.color]}-${PIECES[square.type]}.pos-${pos}`);
-						if (!piece.length) return;
-						piece.addClass("locked");
-						locked.push(pos);
+						let pos = files.charAt(x) + ranks.charAt(y);
+						htm.push(`<piece class="${COLORS[square.color]}-${PIECES[square.type]} pos-${pos}"></piece>`);
 					});
+				});
+				// update DOM
+				self.el.ghost.html(htm.join(""));
+
+				let locked = [];
+				let ghosts = self.el.ghost.find("piece").map(el => {
+					let rect = el.getBoundingClientRect();
+					return { el, rect };
+				});
+				let matrix = self.el.board.find("piece").map(el => {
+					let rect = el.getBoundingClientRect(),
+						// measure distances
+						dists = ghosts.map(ghost => {
+							let distance = Math.hypot(ghost.rect.left - rect.left, ghost.rect.top - rect.top);
+							return { ghost, distance };
+						});
+					return { el, distances: dists.sort((a, b) => a.distance - b.distance) };
 				});
 
-				board.map((row, y) => {
-					row.map((square, x) => {
-						let pos = files.charAt(x) + ranks.charAt(y);
-						if (!square || ~locked.indexOf(pos)) return;
+				// iterate distance matrix
+				matrix
+					.sort((a, b) => a.distances[0].distance - b.distances[0].distance)
+					.map(item => {
+						let selected = item.distances.find(g => locked.indexOf(g.ghost.el) < 0);
+						let oldPos = item.el.className.match(/pos-(\w\d)/)[1],
+							newPos = selected.ghost.el.className.match(/pos-(\w\d)/)[1];
+						locked.push(selected.ghost.el);
 						
-						let piece = self.board.find(`.${COLORS[square.color]}-${PIECES[square.type]}:not(.locked)`);
-						piece.cssSequence("locked moving to-"+ pos, "transitionend", el => {
-							piece.removeClass("locked moving to-"+ pos)
-								.addClass("pos-"+ pos);
+						if (selected.distance === 0) return;
+						$(item.el).cssSequence("moving to-"+ newPos, "transitionend", el => {
+							el.removeClass(`moving to-${newPos} pos-${oldPos}`).addClass("pos-"+ newPos);
 						});
 					});
-				});
+
+				self.el.ghost.html("");
 				break;
 			case "promote-pawn":
 				name = event.name || event.target.className.split("-")[0];
@@ -355,16 +377,16 @@ const chess = {
 				// clean up
 				delete self.moveAfterPromotion;
 				// hide lightbox
-				self.board.parent().removeClass("show-pawn-promotion");
+				self.el.board.parent().removeClass("show-pawn-promotion");
 
 				let res = game.move(move);
 				if (res && res.captured) {
 					let cc = res.color === "w" ? "b" : "w";
 					// remove captured piece
-					self.board.find(`piece.pos-${res.to}.${COLORS[cc]}-${PIECES[res.captured]}`).remove();
+					self.el.board.find(`piece.pos-${res.to}.${COLORS[cc]}-${PIECES[res.captured]}`).remove();
 				}
 				// update pawn piece
-				piece = self.board.find(`.${COLORS[move.color]}-${PIECES[move.piece]}.pos-${move.to}`);
+				piece = self.el.board.find(`.${COLORS[move.color]}-${PIECES[move.piece]}.pos-${move.to}`);
 				piece.prop("className", `${COLORS[move.color]}-${name} pos-${move.to}`);
 				piece.addClass("active");
 
