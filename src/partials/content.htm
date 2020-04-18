@@ -10,6 +10,19 @@
 		</div>
 		<div class="ghost-pieces"></div>
 
+		<svg class="movement-indicator">
+			<style type="text/css">
+				.st0 { stroke: #fff; stroke-width: 11; stroke-linecap: round1; }
+				.st1 { fill: #fff; }
+			</style>
+			<defs>
+				<marker id="arrowhead" orient="auto" markerWidth="5" markerHeight="5" refX="3" refY="2">
+					<path class="st1" d="M1,0 V4 L4,2 Z" />
+				</marker>
+			</defs>
+			<line class="st0" marker-end="url(#arrowhead)" x1="114" y1="114" x2="273" y2="500" />
+		</svg>
+
 		<coords class="ranks">
 			<coord>1</coord>
 			<coord>2</coord>
