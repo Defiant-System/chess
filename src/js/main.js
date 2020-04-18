@@ -34,7 +34,7 @@ let pgn = `[Event "Reykjavik WCh"]
 [PlyCount "111"]
 
 1. d4 Nf6 2. c4 e6 3. Nf3 d5 4. Nc3 Bb4 5. e3 O-O 6. Bd3 c5
-7. O-O Nc6 8. a3 Ba5 9. Ne2 dxc4`;
+7. O-O Nc6 8. a3 Ba5 9. Ne2 dxc4 10. Bxc4`;
 
 
 const chess = {
@@ -369,17 +369,33 @@ const chess = {
 				// update DOM
 				self.el.ghost.html(htm.join(""));
 
+				// add missing pieces
+				let ghostPieces = self.el.ghost.find("piece"),
+					boardPieces = self.el.board.find("piece");
+				if (ghostPieces.length > boardPieces.length) {
+					ghostPieces.map(el => {
+							let name = el.className.split(" "),
+								piece = self.el.board.find(`.${name[0]}.${name[1]}`),
+								gEls = self.el.ghost.find(`.${name[0]}`),
+								bEls = self.el.board.find(`.${name[0]}`);
+							if (!piece.length && gEls.length != bEls.length) {
+								self.el.board[0].appendChild(el.cloneNode());
+							}
+						});
+				}
+
 				let ghosts = self.el.ghost.find("piece").map(el => {
-					let rect = el.getBoundingClientRect();
-					return { el, rect };
-				});
+						let rect = el.getBoundingClientRect();
+						return { el, rect };
+					});
+
 				let matrix = self.el.board.find("piece").map(el => {
 					let rect = el.getBoundingClientRect(),
 						distances = ghosts // measure distances
 							.filter(ghost => ghost.el.className.split(" ")[0] === el.className.split(" ")[0])
 							.map(ghost => {
 								let distance = Math.hypot(ghost.rect.left - rect.left, ghost.rect.top - rect.top);
-								return { ghost, distance };
+								return { ...ghost, distance };
 							})
 							.sort((a, b) => a.distance - b.distance);
 					return { el, distances };
@@ -389,17 +405,18 @@ const chess = {
 				matrix
 					.sort((a, b) => a.distances[0].distance - b.distances[0].distance)
 					.map((item, i) => {
-						let selected = item.distances.find(g => locked.indexOf(g.ghost.el) < 0);
+						let selected = item.distances.find(ghost => !~locked.indexOf(ghost.el));
+
 						// remove captured pieces
 						if (!selected) {
-							matrix.splice(i, 1);
+							//matrix.splice(i, 1);
 							return item.el.parentNode.removeChild(item.el);
 						}
 						
 						let oldPos = item.el.className.match(/pos-(\w\d)/)[1],
-							newPos = selected.ghost.el.className.match(/pos-(\w\d)/)[1];
+							newPos = selected.el.className.match(/pos-(\w\d)/)[1];
 						
-						locked.push(selected.ghost.el);
+						locked.push(selected.el);
 						if (selected.distance === 0) return;
 
 						$(item.el).cssSequence("moving to-"+ newPos, "transitionend", el => {
@@ -413,13 +430,8 @@ const chess = {
 						});
 					});
 
-				// add missing pieces
-				ghosts
-					.filter(item => !~locked.indexOf(item.el))
-					.map(item => self.el.board[0].appendChild(item.el.cloneNode()));
-
 				// clear ghost board
-			//	self.el.ghost.html("");
+				self.el.ghost.html("");
 				break;
 			case "promote-pawn":
 				name = event.name || event.target.className.split("-")[0];
