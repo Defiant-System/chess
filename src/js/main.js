@@ -2,6 +2,7 @@
 ant_require("modules/chess.0.10.3.js");
 ant_require("modules/chess-ai.js");
 ant_require("modules/pgn-parser.js");
+ant_require("modules/chat.js");
 
 const FILES = "abcdefgh";
 const RANKS = "87654321";
@@ -61,6 +62,10 @@ const chess = {
 		};
 		// create history stack
 		this.history = new window.History;
+		
+		// init chat
+		CHAT.init();
+
 		//window.tabs.add("Second Game");
 
 		//let fen = "2n1r3/p1k2pp1/B1p3b1/P7/5bP1/2N1B3/1P2KP2/2R5 b - - 4 25";
@@ -74,11 +79,11 @@ const chess = {
 		//let fen = "4r3/5P2/2p5/1p5k/QP2p1R1/P1B5/2P2K1p/3r4 w - - 1 48";
 		//let fen = "r3k2r/p7/3b1p2/2NP3p/2Q5/8/PPPB1PPP/R3K2R w KQk - 1 17";
 		//let fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq e3 0 1";
-		//let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+		let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		//let fen = "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
 		//let fen = "N3R3/1kPp4/8/6bp/8/8/PPP2PPP/R5K1 w - - 3 26";
-		//this.dispatch({ type: "game-from-fen", fen });
-		this.dispatch({ type: "game-from-pgn", pgn });
+		this.dispatch({ type: "game-from-fen", fen });
+		//this.dispatch({ type: "game-from-pgn", pgn });
 
 		// let move = { from: "h7", to: "h8", color: "w", piece: "p" };
 		// console.log( this.isPromotion(move) );
@@ -101,6 +106,8 @@ const chess = {
 			el;
 		//console.log(event);
 		switch (event.type) {
+			case "window.keystroke":
+				return CHAT.dispatch(event);
 			case "output-fen-string":
 				console.log(game.fen());
 				break;
