@@ -5,11 +5,12 @@ const CHAT = {
 		this.transcript = window.find(".transcript");
 		this.input = window.find(".chat-input > div");
 
-		setTimeout(() => {
-			this.input.html("hbi :heart: laura :sunglasses:");
-			//this.input.html("Hello :P :* :) :D ;) :( :heart_eyes:");
-			this.dispatch({ type: "window.keystroke", keyCode: 13 });
-		}, 1000);
+		// setTimeout(() => {
+		// 	this.input.html("Hello world");
+		// 	//this.input.html("hbi :heart: laura :sunglasses:");
+		// 	//this.input.html("Hello :P :* :) :D ;) :( :heart_eyes:");
+		// 	this.dispatch({ type: "window.keystroke", keyCode: 13 });
+		// }, 1000);
 	},
 	dispatch(event) {
 		let self = CHAT,
@@ -17,17 +18,18 @@ const CHAT = {
 			to,
 			msg,
 			el;
+		//console.log(event);
 		switch (event.type) {
 			case "window.keystroke":
 				if (event.keyCode === 13) {
-					to = "hbi";
+					to = "hbi99";
 					msg = $.emoticons(self.input.text());
 					console.log(msg);
 
 					name = event.shiftKey ? "received" : "sent";
 					self.transcript.append(`<div class="${name}">${msg}</div>`);
 
-					//defiant.netSend({ to, msg });
+					defiant.netSend({ to, msg });
 
 					// clear input
 					self.input.html("");
