@@ -1,8 +1,8 @@
 
-ant_require("modules/chess.0.10.3.js");
-ant_require("modules/chess-ai.js");
-ant_require("modules/pgn-parser.js");
-ant_require("modules/chat.js");
+defiant.require("modules/chess.0.10.3.js");
+defiant.require("modules/chess-ai.js");
+defiant.require("modules/pgn-parser.js");
+defiant.require("modules/chat.js");
 
 const FILES = "abcdefgh";
 const RANKS = "87654321";
