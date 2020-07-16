@@ -10,7 +10,7 @@
 		<meta name="left" value="120"/>
 		<meta name="minimize"/>
 		<meta name="maximize" value="disabled"/>
-		<meta name="resize"/>
+		<meta name="resize" value="disabled"/>
 		<meta name="clones" value="true"/>
 		<meta name="script" value="src/js/main.js"/>
 		<meta name="style" value="src/css/main.less"/>
