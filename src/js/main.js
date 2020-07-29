@@ -48,8 +48,26 @@ Nxd4 17. Nxd4 Ba4 18. Bb3 Bxb3 19. Nxb3 Rxd1+ 20. Rxd1 Rc8
 56. Kd6 1-0`;
 
 
+/*
+fetch("~/test.wasm")
+	.then(bytes => bytes.arrayBuffer())
+	.then(mod => WebAssembly.compile(mod))
+	.then(module => {return new WebAssembly.Instance(module)})
+	.then(instance => {   
+		console.log(instance); 
+		let buffer = new Uint8Array(instance.exports.memory.buffer); 
+		let test = instance.exports._Z7c_hellov(); 
+		let mytext = ""; 
+		for (let i=test; buffer[i]; i++) {
+			mytext += String.fromCharCode(buffer[i]);
+		}
+		console.log(mytext);
+		//document.getElementById("textcontent").innerHTML = mytext; 
+	});
+*/
+
 const chess = {
-	init() {
+	async init() {
 		// fast references
 		this.el = {
 			board: window.find(".board"),
@@ -63,6 +81,27 @@ const chess = {
 		// create history stack
 		this.history = new window.History;
 		
+		let Stockfish = await $.fetch("~/wasm/stockfish.js");
+		
+		Stockfish().then(sf => {
+			let depth = 3;
+
+			sf.addMessageListener(line => {
+				console.log(line);
+			});
+
+			sf.postMessage('uci');
+  			
+  			setTimeout(() => {
+				sf.postMessage('quit');
+				// sf.postMessage('setoption name Threads value 16');
+				// sf.postMessage('setoption name Hash value 1024');
+				// sf.postMessage('position fen 4r1k1/r1q2ppp/ppp2n2/4P3/5Rb1/1N1BQ3/PPP3PP/R5K1 w - - 1 17');
+				// sf.postMessage('go depth ' + depth);
+			}, 1000);
+		});
+
+
 		// init chat
 		CHAT.init();
 
@@ -79,7 +118,7 @@ const chess = {
 		//let fen = "4r3/5P2/2p5/1p5k/QP2p1R1/P1B5/2P2K1p/3r4 w - - 1 48";
 		//let fen = "r3k2r/p7/3b1p2/2NP3p/2Q5/8/PPPB1PPP/R3K2R w KQk - 1 17";
 		//let fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq e3 0 1";
-		let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+		let fen = "4r1k1/r1q2ppp/ppp2n2/4P3/5Rb1/1N1BQ3/PPP3PP/R5K1 w - - 1 17";
 		//let fen = "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
 		//let fen = "N3R3/1kPp4/8/6bp/8/8/PPP2PPP/R5K1 w - - 3 26";
 		this.dispatch({ type: "game-from-fen", fen });
@@ -106,8 +145,16 @@ const chess = {
 			el;
 		//console.log(event);
 		switch (event.type) {
+			// system events
 			case "window.keystroke":
 				return CHAT.dispatch(event);
+			// custom events
+			case "open-help":
+				defiant.shell("fs -u '~/help/index.md'");
+				break;
+			case "engine-interface":
+				defiant.shell("fs -u '~/help/engine-interface.md'");
+				break;
 			case "output-fen-string":
 				console.log(game.fen());
 				break;

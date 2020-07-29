@@ -12,6 +12,7 @@
 	</Menu>
 	<Menu name="Help">
 		<Menu name="Help" click="open-help"/>
+		<Menu name="Stockfish Engine Interface" click="engine-interface"/>
 		<Menu type="divider"/>
 		<Menu name="Source Code"/>
 	</Menu>

@@ -6,3 +6,11 @@
 
 ### How to
 
+===
+*This application uses [Stockfish](//en.wikipedia.org/wiki/Stockfish_%28chess%29) - originally written by:
+T. Romstad
+M. Costalba
+J. Kiiski
+G. Linscott
+
+The WebAssembly version ported by [Niklas Fiekas](//github.com/niklasf)
