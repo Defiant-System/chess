@@ -68,12 +68,6 @@ const chess = {
 		this.dispatch({ type: "new-game" });
 		//this.dispatch({ type: "game-from-fen", fen });
 		//this.dispatch({ type: "game-from-pgn", pgn });
-
-		// let move = { from: "h7", to: "h8", color: "w", piece: "p" };
-		// console.log( this.isPromotion(move) );
-		
-		// let move = { from: "e1", to: "g1", color: "w", piece: "k" };
-		// console.log( this.isCastling(move) );
 	},
 	dispatch(event) {
 		let Self = chess,

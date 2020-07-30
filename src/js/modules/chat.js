@@ -6,7 +6,7 @@ const CHAT = {
 		this.input = window.find(".chat-input > div");
 
 		// setTimeout(() => {
-		// 	this.input.html("Hello world");
+		// 	this.input.html("Hello world :)");
 		// 	//this.input.html("hbi :heart: laura :sunglasses:");
 		// 	//this.input.html("Hello :P :* :) :D ;) :( :heart_eyes:");
 		// 	this.dispatch({ type: "window.keystroke", keyCode: 13 });
@@ -24,8 +24,7 @@ const CHAT = {
 				if (event.keyCode === 13) {
 					to = "hbi99";
 					msg = $.emoticons(self.input.text());
-					console.log(msg);
-
+					// test to see ui for received messages
 					name = event.shiftKey ? "received" : "sent";
 					self.transcript.append(`<div class="${name}">${msg}</div>`);
 
