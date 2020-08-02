@@ -1,6 +1,6 @@
 <MenuBar>
 	<Menu name="Chess">
-		<Menu name="About Chess"/>
+		<Menu name="About Chess" shell="win -a"/>
 		<Menu type="divider"/>
 		<Menu name="New Game" click="restart"/>
 		<Menu type="divider"/>
