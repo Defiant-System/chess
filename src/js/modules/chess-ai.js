@@ -12,7 +12,7 @@ const Levels = [
 
 const AI = {
 	async init() {
-		let Stockfish = await $.fetch("~/wasm/stockfish.js");
+		let Stockfish = await window.fetch("~/wasm/stockfish.js");
 		
 		this.thinking = false;
 		this.stack = [];
