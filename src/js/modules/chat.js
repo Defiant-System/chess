@@ -28,7 +28,7 @@ const CHAT = {
 					name = event.shiftKey ? "received" : "sent";
 					self.transcript.append(`<div class="${name}">${msg}</div>`);
 
-					defiant.netSend({ to, msg });
+					//defiant.netSend({ to, msg });
 
 					// clear input
 					self.input.html("");
