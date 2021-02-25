@@ -15,6 +15,8 @@ content {
 		width: calc( var(--box-size) * 8 );
 		height: calc( var(--box-size) * 8 );
 		background: url(~/icons/board.png);
+		background-size: 100%;
+		image-rendering: pixelated;
 		position: relative;
 		font-size: 0;
 		box-shadow: 0 2px 7px rgba(0,0,0,0.35);
@@ -590,6 +592,7 @@ content {
 			background-repeat: no-repeat;
 			background-size: 95%;
 			background-position: 50% 50%;
+			image-rendering: initial;
 		}
 
 		&.black-rook:after { background-image: url(~/icons/black-rook.png); }
