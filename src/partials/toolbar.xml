@@ -2,11 +2,8 @@
 	<Group>
 		<Tool symbol="icon-undo" state="disabled"/>
 		<Tool symbol="icon-rotate" click="rotate-board"/>
-		<Options>
-			<Tool symbol="icon-blank"/>
-			<Tool symbol="icon-blank"/>
-			<Tool symbol="icon-blank"/>
-		</Options>
+	</Group>
+	<Group>
 		<Tool symbol="icon-gear" menu="toolbar-config"/>
 	</Group>
 </ToolBar>
