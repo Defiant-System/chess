@@ -204,7 +204,7 @@ const chess = {
 				Self.el.board.addClass("can-move-squares").prepend(htm.join(""));
 				break;
 			case "make-move":
-				if (!event.from || !event.to) {
+				if (!event.from || !event.to) {
 					Self.dispatch({ type: "after-move" });
 				}
 				// reset board
@@ -264,7 +264,7 @@ const chess = {
 			case "after-move":
 				let turnColor = COLORS[game.turn()];
 
-				if (event.from || event.to) {
+				if (event.from || event.to) {
 					move = event;
 					move.fen = game.fen();
 					delete move.type;
@@ -527,7 +527,7 @@ const chess = {
 					&& move.color === "w"
 					&& move.from.charAt(1) === "7"
 					&& move.to.charAt(1) === "8";
-		return bPromo || wPromo;
+		return bPromo || wPromo;
 	}
 };
 
