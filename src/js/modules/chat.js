@@ -3,7 +3,7 @@ const CHAT = {
 	init() {
 		// fast references
 		this.transcript = window.find(".transcript");
-		this.input = window.find(".chat-input > div");
+		this.input = window.find(".chat-input > div[contenteditable]");
 
 		// setTimeout(() => {
 		// 	this.input.html("Hello world :)");
@@ -13,7 +13,7 @@ const CHAT = {
 		// }, 1000);
 	},
 	dispatch(event) {
-		let self = CHAT,
+		let Self = CHAT,
 			name,
 			to,
 			msg,
@@ -23,13 +23,13 @@ const CHAT = {
 			case "window.keystroke":
 				if (event.keyCode === 13) {
 					to = "hbi99";
-					msg = $.emoticons(self.input.text());
+					msg = $.emoticons(Self.input.text());
 					// test to see ui for received messages
 					name = event.shiftKey ? "received" : "sent";
-					self.transcript.append(`<div class="${name}">${msg}</div>`);
+					Self.transcript.append(`<div class="${name}">${msg}</div>`);
 
 					// clear input
-					self.input.html("");
+					requestAnimationFrame(() => Self.input.html(""));
 				}
 				break;
 		}

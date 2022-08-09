@@ -20,7 +20,7 @@
 					<path class="st1" d="M1,0 V4 L4,2 Z" />
 				</marker>
 			</defs>
-			<line class="st0" marker-end="url(#arrowhead)" x1="273" y1="290" x2="273" y2="230" />
+			<line class="st0" marker-end="url(#arrowhead)" x1="173" y1="290" x2="130" y2="210" />
 		</svg>
 
 		<coords class="ranks">
@@ -61,72 +61,74 @@
 		</div>
 	</div>
 	<div class="sidebar">
+		<div class="wrapper">
 
-		<div class="tab-view_">
-			<div class="tab-row_">
-				<div class="tab-active_">Chat</div>
-				<div>Details</div>
-				<div>Notes</div>
-			</div>
+			<div class="tab-view_">
+				<div class="tab-row_">
+					<div class="tab-active_">Chat</div>
+					<div>Details</div>
+					<div>Notes</div>
+				</div>
 
-			<div class="tab-body_">
-				<!-- Chat -->
-				<div class="tab-chat tab-active_">
-					<div class="chat-box">
-						<div class="transcript">
+				<div class="tab-body_">
+					<!-- Chat -->
+					<div class="tab-chat tab-active_">
+						<div class="chat-box">
+							<div class="transcript">
+								<!--
+								<div class="sent">This is the best chat interface ever</div>
+								<div class="received" data-from="Laura Bularca">I agree</div>
+								<div class="received" data-from="Laura Bularca">Testing to write stuff</div>
+								<div class="sent">Some more text</div>
+								-->
+							</div>
+							<div class="chat-input">
+								<div contenteditable="true" placeholder="Enter message here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Details -->
+					<div class="tab-details">
+						<div class="list-body move-history" data-click="history-entry-go">
 							<!--
-							<div class="sent">This is the best chat interface ever</div>
-							<div class="received" data-from="Laura Bularca">I agree</div>
-							<div class="received" data-from="Laura Bularca">Testing to write stuff</div>
-							<div class="sent">Some more text</div>
-							-->
+							<span class="move"><piece class="white-rook"></piece>d2</span>
+							<span class="move"><piece class="black-queen"></piece>xb2</span>
+							<span class="move"><piece class="white-pawn"></piece>b5</span>
+							<span class="move"><piece class="black-rook"></piece>h3</span>
+							<span class="move"><piece class="white-knight"></piece>c1</span>
+							<span class="move"><piece class="black-rook"></piece>h3</span>
+							<span class="move"><piece class="white-rook"></piece>d2</span>
+							<span class="move"><piece class="black-queen"></piece>xb2</span>
+							<span class="move"><piece class="white-pawn"></piece>b5</span>
+							<span class="move active"><piece class="black-rook"></piece>h3</span>-->
 						</div>
-						<div class="chat-input">
-							<div contenteditable="true" placeholder="Enter message here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></div>
-						</div>
-					</div>
-				</div>
 
-				<!-- Details -->
-				<div class="tab-details">
-					<div class="list-body move-history" data-click="history-entry-go">
+						<span class="option-buttons_">
+							<span data-click="history-go-start"><i class="icon-to-start"></i></span>
+							<span data-click="history-go-prev"><i class="icon-previous"></i></span>
+							<span data-click="history-go-next" class="disabled"><i class="icon-next"></i></span>
+							<span data-click="history-go-end" class="disabled"><i class="icon-to-end"></i></span>
+						</span>
+
+						<hr>
 						<!--
-						<span class="move"><piece class="white-rook"></piece>d2</span>
-						<span class="move"><piece class="black-queen"></piece>xb2</span>
-						<span class="move"><piece class="white-pawn"></piece>b5</span>
-						<span class="move"><piece class="black-rook"></piece>h3</span>
-						<span class="move"><piece class="white-knight"></piece>c1</span>
-						<span class="move"><piece class="black-rook"></piece>h3</span>
-						<span class="move"><piece class="white-rook"></piece>d2</span>
-						<span class="move"><piece class="black-queen"></piece>xb2</span>
-						<span class="move"><piece class="white-pawn"></piece>b5</span>
-						<span class="move active"><piece class="black-rook"></piece>h3</span>-->
+						<span class="option-buttons_">
+							<span>1s</span>
+							<span>2s</span>
+							<span>3s</span>
+							<span>5s</span>
+						</span>-->
+						
 					</div>
 
-					<span class="option-buttons_">
-						<span data-click="history-go-start"><i class="icon-to-start"></i></span>
-						<span data-click="history-go-prev"><i class="icon-previous"></i></span>
-						<span data-click="history-go-next" class="disabled"><i class="icon-next"></i></span>
-						<span data-click="history-go-end" class="disabled"><i class="icon-to-end"></i></span>
-					</span>
-
-					<hr>
-					<!--
-					<span class="option-buttons_">
-						<span>1s</span>
-						<span>2s</span>
-						<span>3s</span>
-						<span>5s</span>
-					</span>-->
-					
-				</div>
-
-				<!-- Notes -->
-				<div class="tab-notes">
-					Notes
+					<!-- Notes -->
+					<div class="tab-notes">
+						Notes
+					</div>
 				</div>
 			</div>
-		</div>
 
+		</div>
 	</div>
 </content>
