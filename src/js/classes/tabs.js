@@ -11,6 +11,8 @@ class Tabs {
 			board: window.find(".board"),
 		};
 
+		this._tabNew = "New Game";
+		this._fenNew = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		this._game = new Chess();
 	}
 
@@ -20,10 +22,10 @@ class Tabs {
 
 	add(opt={}) {
 		let tId = "f"+ Date.now(),
-			tName = opt.name || "New Game",
+			tName = opt.name || this._tabNew,
 			tabEl = this._window.tabs.add(tName, tId),
 			history = new window.History,
-			fen = opt.fen || "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+			fen = opt.fen || this._fenNew,
 			orientation = "white";
 		// save reference to tab
 		this._stack[tId] = { tId, tabEl, orientation, history, fen };
@@ -34,6 +36,15 @@ class Tabs {
 	remove(tId) {
 		this._stack[tId] = false;
 		delete this._stack[tId];
+	}
+
+	reset() {
+		// update fen
+		this._active.fen = this._fenNew;
+		// reset tab name
+		this._active.tabEl.find("span").html(this._tabNew);
+		// update
+		this.update();
 	}
 
 	rotateActive(val) {
@@ -70,5 +81,7 @@ class Tabs {
 		});
 		// update DOM
 		this._els.board.html(htm.join(""));
+		// window title
+		window.title = active.tabEl.find("span").html();
 	}
 }

@@ -28,6 +28,7 @@ const chess = {
 	},
 	dispatch(event) {
 		let Self = chess,
+			value,
 			el;
 		// console.log(event);
 		switch (event.type) {
@@ -54,9 +55,37 @@ const chess = {
 				Self.tabs.remove(event.el.data("id"));
 				break;
 
-			// custom events
+			// from menubar
+			case "new-game":
+				// temp
+				Self.tabs.add();
+				break;
+			case "reset-game":
+				Self.tabs.reset();
+				break;
+			case "close-game":
+				value = Self.tabs.length;
+				if (value > 1) {
+					Self.tabs._active.tabEl.find(`[sys-click]`).trigger("click");
+				} else if (value === 1) {
+					// system close window / spawn
+					defiant.shell("win -c");
+				}
+				break;
 			case "rotate-board":
 				Self.tabs.rotateActive();
+				break;
+
+			// custom events
+			case "output-fen-string":
+				console.log( Self.tabs._game.fen() );
+				break;
+			case "output-game-pgn":
+				console.log( Self.tabs._game.pgn() );
+				break;
+			case "output-history-array":
+				console.log( JSON.stringify( Self.tabs._active.history.stack ) );
+				//console.log( Self.tabs._game.history({ verbose: true }) );
 				break;
 		}
 	}

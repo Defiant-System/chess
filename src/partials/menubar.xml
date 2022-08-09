@@ -2,9 +2,15 @@
 	<Menu name="Chess">
 		<Menu name="About Chess" shell="win -a"/>
 		<Menu type="divider"/>
-		<Menu name="New Game" click="restart"/>
+		<Menu name="Close Game" click="close-game" hotkey="alt+w"/>
 		<Menu type="divider"/>
 		<Menu name="Quit Chess" shell="win -c"/>
+	</Menu>
+	<Menu name="Game">
+		<Menu name="New Game" click="new-game" hotkey="alt+n"/>
+		<Menu name="Reset Game" click="reset-game" hotkey="alt+x"/>
+		<Menu type="divider"/>
+		<Menu name="Rotate Board" click="rotate-board" hotkey="alt+r"/>
 	</Menu>
 	<Menu name="Help">
 		<Menu name="Help" click="open-help"/>
