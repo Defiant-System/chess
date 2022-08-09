@@ -39,10 +39,15 @@ class Tabs {
 	}
 
 	reset() {
+		let active = this._active;
 		// update fen
-		this._active.fen = this._fenNew;
+		active.fen = this._fenNew;
 		// reset tab name
-		this._active.tabEl.find("span").html(this._tabNew);
+		active.tabEl.find("span").html(this._tabNew);
+		// reset pieces + board
+		this.els.board.find(".active, .castling-rook").removeClass("active castling-rook");
+		this.els.board.find(".can-move").remove();
+		this.els.board.removeClass("can-move-squares");
 		// update
 		this.update();
 	}
