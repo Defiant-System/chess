@@ -57,7 +57,6 @@ const chess = {
 
 			// from menubar
 			case "new-game":
-				// temp
 				Self.tabs.add();
 				break;
 			case "reset-game":
@@ -74,6 +73,9 @@ const chess = {
 				break;
 			case "rotate-board":
 				Self.tabs.rotateActive();
+				break;
+			case "engine-interface":
+				defiant.shell("fs -u '~/help/engine-interface.md'");
 				break;
 
 			// custom events
