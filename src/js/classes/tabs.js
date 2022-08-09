@@ -25,7 +25,6 @@ class Tabs {
 			history = new window.History,
 			fen = opt.fen || "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
 			orientation = "white";
-
 		// save reference to tab
 		this._stack[tId] = { tId, tabEl, orientation, history, fen };
 		// focus on file
@@ -42,38 +41,30 @@ class Tabs {
 		let active = this._active,
 			el = this._els.board.parent(),
 			value = val || (el.data("orientation") === "white" ? "black" : "white");
-		
+		// update active state / UI
 		el.data({ orientation: value });
+		active.orientation = value;
 	}
 
 	focus(tId) {
 		// reference to active tab
 		this._active = this._stack[tId];
-
 		// UI update
 		this.update();
 	}
 
 	update() {
 		let active = this._active,
-			files = FILES,
-			ranks = RANKS,
 			htm = [];
 		// board orientation
-		if (active.orientation === "black") {
-			files = files.split("").reverse().join("");
-			ranks = ranks.split("").reverse().join("");
-		}
-		
 		this._els.board.parent().data({ orientation: active.orientation });
-
 		// switch fen
 		this._game.load(active.fen);
 		// update b oard
 		this._game.board().map((row, y) => {
 			row.map((square, x) => {
 				if (!square) return;
-				let pos = files.charAt(x) + ranks.charAt(y);
+				let pos = FILES.charAt(x) + RANKS.charAt(y);
 				htm.push(`<piece class="${COLORS[square.color]}-${PIECES[square.type]} pos-${pos}"></piece>`);
 			});
 		});
