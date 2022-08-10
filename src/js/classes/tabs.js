@@ -29,8 +29,10 @@ class Tabs {
 			orientation = "white";
 
 		if (opt.pgn) {
+			// parse PGN
+			let parsed = PGN.parse(opt.pgn);
 			// populate history
-			PGN.parse(opt.pgn).map(move => history.push(move));
+			parsed.moves.map(move => history.push(move));
 
 			let game = new Chess();
 			game.load_pgn(opt.pgn);

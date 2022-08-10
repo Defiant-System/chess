@@ -47,11 +47,11 @@ const chess = {
 				// fetch PGN file
 				/*
 					spassky-fischer.pgn
-					London Chess Classic (3).pgn
 					London Chess Classic (1).pgn
 					London Chess Classic (2).pgn
+					London Chess Classic (3).pgn
 				*/
-				name = "London Chess Classic (1)";
+				name = "London Chess Classic (2)";
 				fetch(`~/pgn/${name}.pgn`, { responseType: "text" })
 					.then(f => f.blob())
 					.then(async blob => {

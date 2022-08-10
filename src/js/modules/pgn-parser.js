@@ -1,12 +1,20 @@
 
 const PGN = {
 	parse(pgnString, fen) {
-		let lastHeaderElement = pgnString.lastIndexOf("]\n\n") + 1;
-		let headerString = pgnString.substr(0, lastHeaderElement);
-		let historyString = pgnString.substr(lastHeaderElement);
-		let parsedMoves = this.pegParse(historyString.replace(/\s\s+/g, ' ').replace(/\n/g, " "));
+		let lastHeader = pgnString.lastIndexOf("]\n\n") + 1;
+		let headerString = pgnString.substr(0, lastHeader);
+		let history = pgnString.substr(lastHeader);
+		let moves = this.pegParse(history.replace(/\s\s+/g, ' ').replace(/\n/g, " "));
+		let header = {};
 
-		return this.createValidMoves(parsedMoves[0], fen);
+		headerString.split("\n").map(line => {
+			if (line.startsWith("[")) line = line.slice(1);
+			if (line.endsWith("]")) line = line.slice(0,-1);
+			let [m, key, value] = line.match(/(\w+) "(.+?)"/);
+			header[key] = value;
+		});
+
+		return { lastHeader, header, history, moves: this.createValidMoves(moves[0], fen) };
 	},
 	createValidMoves(parsedMoves, fen) {
 		let chess = fen ? new Chess(fen) : new Chess();
