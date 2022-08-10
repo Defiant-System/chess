@@ -463,6 +463,10 @@ content {
 					left: 0;
 					right: 0;
 					bottom: 0;
+					background-repeat: no-repeat;
+					background-size: 100% 100%;
+					background-position: 50% 50%;
+					image-rendering: initial;
 				}
 			}
 		}
@@ -493,10 +497,10 @@ content {
 			}
 			& ~ .pawn-promotion piece {
 				&:before { background: rgba(255,255,255,.3); }
-				&.rook:after { background: url(~/icons/black-rook.png); }
-				&.knight:after { background: url(~/icons/black-knight.png); }
-				&.bishop:after { background: url(~/icons/black-bishop.png); }
-				&.queen:after { background: url(~/icons/black-queen.png); }
+				&.rook:after { background-image: url(~/icons/black-rook.png); }
+				&.knight:after { background-image: url(~/icons/black-knight.png); }
+				&.bishop:after { background-image: url(~/icons/black-bishop.png); }
+				&.queen:after { background-image: url(~/icons/black-queen.png); }
 			}
 		}
 		&.white-turn {
@@ -505,10 +509,10 @@ content {
 			}
 			& ~ .pawn-promotion piece {
 				&:before { background: rgba(0,0,0,.15); border-color: #ffffffa0; }
-				&.rook:after { background: url(~/icons/white-rook.png); }
-				&.knight:after { background: url(~/icons/white-knight.png); }
-				&.bishop:after { background: url(~/icons/white-bishop.png); }
-				&.queen:after { background: url(~/icons/white-queen.png); }
+				&.rook:after { background-image: url(~/icons/white-rook.png); }
+				&.knight:after { background-image: url(~/icons/white-knight.png); }
+				&.bishop:after { background-image: url(~/icons/white-bishop.png); }
+				&.queen:after { background-image: url(~/icons/white-queen.png); }
 			}
 		}
 		&.can-move-squares {

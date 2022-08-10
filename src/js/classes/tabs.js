@@ -27,6 +27,16 @@ class Tabs {
 			history = new window.History,
 			fen = opt.fen || this._fenNew,
 			orientation = "white";
+
+		if (opt.pgn) {
+			// populate history
+			PGN.parse(opt.pgn).map(move => history.push(move));
+
+			let game = new Chess();
+			game.load_pgn(opt.pgn);
+			fen = game.fen();
+		}
+
 		// save reference to tab
 		this._stack[tId] = { tId, tabEl, orientation, history, fen };
 		// focus on file

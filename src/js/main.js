@@ -28,6 +28,7 @@ const chess = {
 	},
 	dispatch(event) {
 		let Self = chess,
+			name,
 			value,
 			el;
 		// console.log(event);
@@ -38,13 +39,25 @@ const chess = {
 
 				// temp
 				Self.tabs.add({
-					name: "London Chess Classic 2016",
-					fen: "8/1p6/1P1K4/pk6/8/8/5B2/8 b - - 3 56",
-				});
-				Self.tabs.add({
 					name: "Spassky - Fischer",
-					fen: "8/3R1pk1/6pb/8/7P/5P2/1r1p1N1P/4rRK1 w - - 4 54",
+					fen: "8/1p6/1P1K4/pk6/8/8/5B2/8 b - - 3 56",
+				// 	fen: "8/3R1pk1/6pb/8/7P/5P2/1r1p1N1P/4rRK1 w - - 4 54",
 				});
+
+				// fetch PGN file
+				/*
+					spassky-fischer.pgn
+					London Chess Classic (3).pgn
+					London Chess Classic (1).pgn
+					London Chess Classic (2).pgn
+				*/
+				name = "London Chess Classic (1)";
+				fetch(`~/pgn/${name}.pgn`, { responseType: "text" })
+					.then(f => f.blob())
+					.then(async blob => {
+						let pgn = await blob.text();
+						Self.tabs.add({ name, pgn });
+					});
 				break;
 
 			// tab related events
