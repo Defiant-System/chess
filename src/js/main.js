@@ -102,6 +102,13 @@ const chess = {
 				console.log( JSON.stringify( Self.tabs._active.history.stack ) );
 				//console.log( Self.tabs._game.history({ verbose: true }) );
 				break;
+
+			case "history-go-start":
+			case "history-go-prev":
+			case "history-go-next":
+			case "history-go-end":
+				Self.tabs.historyGo(event.type.split("-")[2]);
+				break;
 		}
 	}
 };

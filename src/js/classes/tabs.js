@@ -9,6 +9,11 @@ class Tabs {
 		// fast references
 		this._els = {
 			board: window.find(".board"),
+			history: window.find(".move-history"),
+			hBtnStart: window.find("[data-click='history-go-start']"),
+			hBtnPrev: window.find("[data-click='history-go-prev']"),
+			hBtnNext: window.find("[data-click='history-go-next']"),
+			hBtnEnd: window.find("[data-click='history-go-end']"),
 		};
 
 		this._tabNew = "New Game";
@@ -33,7 +38,7 @@ class Tabs {
 			let parsed = PGN.parse(opt.pgn);
 			// populate history
 			parsed.moves.map(move => history.push(move));
-
+			// get FEN value
 			let game = new Chess();
 			game.load_pgn(opt.pgn);
 			fen = game.fen();
@@ -64,6 +69,20 @@ class Tabs {
 		this.update();
 	}
 
+	historyGo(val) {
+		let active = this._active;
+		switch (val) {
+			case "start": active.history.go(0); break;
+			case "prev": active.history.go(active.history.index - 1); break;
+			case "next": active.history.go(active.history.index + 1); break;
+			case "end": active.history.go(active.history.stack.length - 1); break;
+		}
+		// re-render board
+		
+		// Self.history.go(Self.history.stack.length - 1);
+		// Self.dispatch({ type: "history-entry-render" });
+	}
+
 	rotateActive(val) {
 		// reference to active tab
 		let active = this._active,
@@ -90,15 +109,22 @@ class Tabs {
 		this._game.load(active.fen);
 		// update b oard
 		this._game.board().map((row, y) => {
-			row.map((square, x) => {
-				if (!square) return;
+			row.map((s, x) => {
+				if (!s) return;
 				let pos = FILES.charAt(x) + RANKS.charAt(y);
-				htm.push(`<piece class="${COLORS[square.color]}-${PIECES[square.type]} pos-${pos}"></piece>`);
+				htm.push(`<piece class="${COLORS[s.color]}-${PIECES[s.type]} pos-${pos}"></piece>`);
 			});
 		});
 		// update DOM
 		this._els.board.html(htm.join(""));
 		// window title
 		window.title = active.tabEl.find("span").html();
+
+		// render game history
+		htm = active.history.stack.map(e =>
+				`<span class="move"><piece class="${COLORS[e.color]}-${PIECES[e.piece]}"></piece>${e.to}</span>`);
+		this._els.history
+			.html(htm.join(""))
+			.scrollTop(1e5);
 	}
 }
