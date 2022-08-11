@@ -8,6 +8,7 @@ class Tabs {
 
 		// fast references
 		this._els = {
+			chess: window.find(".board").parent(),
 			board: window.find(".board"),
 			history: window.find(".move-history"),
 			hBtnStart: window.find("[data-click='history-go-start']"),
@@ -16,6 +17,7 @@ class Tabs {
 			hBtnEnd: window.find("[data-click='history-go-end']"),
 		};
 
+		this._theme = "blue";
 		this._tabNew = "New Game";
 		this._fenNew = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		this._game = new Chess();
@@ -31,7 +33,8 @@ class Tabs {
 			tabEl = this._window.tabs.add(tName, tId),
 			history = new window.History,
 			fen = opt.fen || this._fenNew,
-			orientation = "white";
+			orientation = "white",
+			theme = opt.theme || this._theme;
 
 		if (opt.pgn) {
 			// parse PGN
@@ -45,7 +48,7 @@ class Tabs {
 		}
 
 		// save reference to tab
-		this._stack[tId] = { tId, tabEl, orientation, history, fen };
+		this._stack[tId] = { tId, tabEl, orientation, theme, history, fen };
 		// focus on file
 		this.focus(tId);
 	}
@@ -78,7 +81,8 @@ class Tabs {
 			case "end": active.history.go(active.history.stack.length - 1); break;
 		}
 		// re-render board
-		
+		this.renderFen(active.history.current.fen);
+
 		// Self.history.go(Self.history.stack.length - 1);
 		// Self.dispatch({ type: "history-entry-render" });
 	}
@@ -86,27 +90,17 @@ class Tabs {
 	rotateActive(val) {
 		// reference to active tab
 		let active = this._active,
-			el = this._els.board.parent(),
+			el = this._els.chess,
 			value = val || (el.data("orientation") === "white" ? "black" : "white");
 		// update active state / UI
 		el.data({ orientation: value });
 		active.orientation = value;
 	}
 
-	focus(tId) {
-		// reference to active tab
-		this._active = this._stack[tId];
-		// UI update
-		this.update();
-	}
-
-	update() {
-		let active = this._active,
-			htm = [];
-		// board orientation
-		this._els.board.parent().data({ orientation: active.orientation });
+	renderFen(fen) {
+		let htm = [];
 		// switch fen
-		this._game.load(active.fen);
+		this._game.load(fen);
 		// update b oard
 		this._game.board().map((row, y) => {
 			row.map((s, x) => {
@@ -117,11 +111,29 @@ class Tabs {
 		});
 		// update DOM
 		this._els.board.html(htm.join(""));
+	}
+
+	focus(tId) {
+		// reference to active tab
+		this._active = this._stack[tId];
+		// UI update
+		this.update();
+	}
+
+	update() {
+		let active = this._active;
+		// board orientation & theme
+		this._els.chess.data({
+			orientation: active.orientation,
+			theme: active.theme,
+		});
+		// render game state using fen value
+		this.renderFen(active.fen);
 		// window title
 		window.title = active.tabEl.find("span").html();
 
 		// render game history
-		htm = active.history.stack.map(e =>
+		let htm = active.history.stack.map(e =>
 				`<span class="move"><piece class="${COLORS[e.color]}-${PIECES[e.piece]}"></piece>${e.to}</span>`);
 		this._els.history
 			.html(htm.join(""))

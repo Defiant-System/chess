@@ -14,9 +14,6 @@ content {
 	.chess {
 		width: calc( var(--box-size) * 8 );
 		height: calc( var(--box-size) * 8 );
-		background: url(~/icons/board.png);
-		background-size: 100%;
-		image-rendering: pixelated;
 		position: relative;
 		font-size: 0;
 		box-shadow: 0 2px 7px rgba(0,0,0,0.35);
@@ -24,7 +21,60 @@ content {
 		margin: 11px;
 		//pointer-events: none;
 
+		&[data-theme="blue"] {
+			&:before {
+				filter: none;
+			}
+		}
+		&[data-theme="gray"] {
+			&:before {
+				filter: grayscale(1);
+			}
+		}
+		&[data-theme="brown"] {
+			&:before {
+				filter: hue-rotate(160deg) brightness(0.85) sepia(.5);
+			}
+			coords {
+				color: #dfd1b7;
+
+				&.ranks coord:nth-of-type(odd),
+				&.files coord:nth-of-type(even) { color: #a78a6b; }
+
+			}
+			.board piece {
+				&.white-rook:after,
+				&.white-knight:after,
+				&.white-bishop:after,
+				&.white-queen:after,
+				&.white-king:after,
+				&.white-pawn:after {
+					filter: sepia(1) saturate(2) brightness(.95) contrast(1);
+				}
+				&.black-rook:after,
+				&.black-knight:after,
+				&.black-bishop:after,
+				&.black-queen:after,
+				&.black-king:after,
+				&.black-pawn:after {
+					filter: hue-rotate(155deg) sepia(0.75) saturate(3) brightness(1.5);
+				}
+			}
+		}
+
 		&:before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: url(~/icons/board.png);
+			background-size: 100%;
+			image-rendering: pixelated;
+		}
+
+		&:after {
 			display: none;
 			content: "";
 			position: absolute;
@@ -38,12 +88,12 @@ content {
 		}
 
 		&.show-game-over {
-			&:before,
+			&:after,
 			.game-over { display: block; }
 		}
 
 		&.show-pawn-promotion {
-			&:before,
+			&:after,
 			.pawn-promotion { display: block; }
 		}
 

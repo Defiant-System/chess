@@ -56,7 +56,7 @@ const chess = {
 					.then(f => f.blob())
 					.then(async blob => {
 						let pgn = await blob.text();
-						Self.tabs.add({ name, pgn });
+						Self.tabs.add({ name, pgn, theme: "brown" });
 					});
 				break;
 
