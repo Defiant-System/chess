@@ -11,6 +11,11 @@
 		<Menu name="Reset Game" click="reset-game" hotkey="alt+x"/>
 		<Menu type="divider"/>
 		<Menu name="Rotate Board" click="rotate-board" hotkey="alt+r"/>
+		<Menu type="divider"/>
+		<Menu name="Theme&#8230;">
+			<Menu name="Blue" click="set-board-theme" arg="blue" check-group="board-theme"/>
+			<Menu name="Brown" click="set-board-theme" arg="brown" check-group="board-theme"/>
+		</Menu>
 	</Menu>
 	<Menu name="Help">
 		<Menu name="Help" click="open-help"/>

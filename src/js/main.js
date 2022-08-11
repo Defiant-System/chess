@@ -87,6 +87,9 @@ const chess = {
 			case "rotate-board":
 				Self.tabs.rotateActive();
 				break;
+			case "set-board-theme":
+				Self.tabs.setTheme(event.arg);
+				break;
 			case "engine-interface":
 				defiant.shell("fs -u '~/help/engine-interface.md'");
 				break;

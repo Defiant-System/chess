@@ -97,6 +97,13 @@ class Tabs {
 		active.orientation = value;
 	}
 
+	setTheme(val) {
+		// board orientation & theme
+		this._els.chess.data({ theme: val });
+		// update setting
+		this._active.theme = val;
+	}
+
 	renderFen(fen) {
 		let htm = [];
 		// switch fen
