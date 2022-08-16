@@ -81,7 +81,7 @@ const chess = {
 					Self.tabs._active.tabEl.find(`[sys-click]`).trigger("click");
 				} else if (value === 1) {
 					// system close window / spawn
-					defiant.shell("win -c");
+					karaqu.shell("win -c");
 				}
 				break;
 			case "rotate-board":
@@ -91,7 +91,7 @@ const chess = {
 				Self.tabs.setTheme(event.arg);
 				break;
 			case "engine-interface":
-				defiant.shell("fs -u '~/help/engine-interface.md'");
+				karaqu.shell("fs -u '~/help/engine-interface.md'");
 				break;
 
 			// custom events

@@ -95,10 +95,10 @@ const chess = {
 				Self.dispatch({ type: "game-from-fen", fen });
 				break;
 			case "open-help":
-				defiant.shell("fs -u '~/help/index.md'");
+				karaqu.shell("fs -u '~/help/index.md'");
 				break;
 			case "engine-interface":
-				defiant.shell("fs -u '~/help/engine-interface.md'");
+				karaqu.shell("fs -u '~/help/engine-interface.md'");
 				break;
 			case "output-fen-string":
 				console.log(game.fen());
