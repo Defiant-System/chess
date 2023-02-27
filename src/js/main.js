@@ -7,11 +7,14 @@
 @import "modules/chat.js";
 
 const FILES = "abcdefgh";
+
 const RANKS = "87654321";
+
 const COLORS = {
 	w: "white",
 	b: "black",
 };
+
 const PIECES = {
 	p: "pawn",
 	n: "knight",
