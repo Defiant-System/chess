@@ -1,20 +1,14 @@
 
-@import "classes/tabs.js";
-
 @import "modules/chess.0.10.3.js";
-@import "modules/chess-ai.js";
 @import "modules/pgn-parser.js";
-@import "modules/chat.js";
+
 
 const FILES = "abcdefgh";
-
 const RANKS = "87654321";
-
 const COLORS = {
 	w: "white",
 	b: "black",
 };
-
 const PIECES = {
 	p: "pawn",
 	n: "knight",
@@ -24,96 +18,69 @@ const PIECES = {
 	k: "king",
 };
 
+let game;
+let pgn = ``;
+
+
 
 const chess = {
 	init() {
-		
+		// fast references
+		this.els = {
+			board: window.find(".board"),
+			ghost: window.find(".ghost-pieces"),
+			history: window.find(".move-history"),
+			hBtnStart: window.find("[data-click='history-go-start']"),
+			hBtnPrev: window.find("[data-click='history-go-prev']"),
+			hBtnNext: window.find("[data-click='history-go-next']"),
+			hBtnEnd: window.find("[data-click='history-go-end']"),
+		};
+
+		// temp
+		this.dispatch({ type: "new-game" });
 	},
 	dispatch(event) {
 		let Self = chess,
+			orientation,
+			files = FILES,
+			ranks = RANKS,
+			board,
 			name,
 			value,
+			htm,
 			el;
 		// console.log(event);
 		switch (event.type) {
 			// system events
 			case "window.init":
-				Self.tabs = new Tabs(Self, window);
-
-				// temp
-				Self.tabs.add({
-					name: "Spassky - Fischer",
-					fen: "8/1p6/1P1K4/pk6/8/8/5B2/8 b - - 3 56",
-				// 	fen: "8/3R1pk1/6pb/8/7P/5P2/1r1p1N1P/4rRK1 w - - 4 54",
-				});
-
-				// fetch PGN file
-				/*
-					spassky-fischer.pgn
-					London Chess Classic (1).pgn
-					London Chess Classic (2).pgn
-					London Chess Classic (3).pgn
-				*/
-				name = "London Chess Classic (2)";
-				fetch(`~/pgn/${name}.pgn`, { responseType: "text" })
-					.then(f => f.blob())
-					.then(async blob => {
-						let pgn = await blob.text();
-						Self.tabs.add({ name, pgn, theme: "brown" });
-					});
 				break;
-
-			// tab related events
-			case "tab-clicked":
-				Self.tabs.focus(event.el.data("id"));
-				break;
-			case "tab-close":
-				Self.tabs.remove(event.el.data("id"));
-				break;
-
-			// from menubar
-			case "new-game":
-				Self.tabs.add();
-				break;
-			case "reset-game":
-				Self.tabs.reset();
-				break;
-			case "close-game":
-				value = Self.tabs.length;
-				if (value > 1) {
-					Self.tabs._active.tabEl.find(`[sys-click]`).trigger("click");
-				} else if (value === 1) {
-					// system close window / spawn
-					karaqu.shell("win -c");
-				}
-				break;
-			case "rotate-board":
-				Self.tabs.rotateActive();
-				break;
-			case "set-board-theme":
-				Self.tabs.setTheme(event.arg);
-				break;
-			case "engine-interface":
-				karaqu.shell("fs -u '~/help/engine-interface.md'");
-				break;
-
 			// custom events
-			case "output-fen-string":
-				console.log( Self.tabs._game.fen() );
+			case "new-game":
+				Self.dispatch({
+					type: "game-from-fen",
+					fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+				});
 				break;
-			case "output-game-pgn":
-				console.log( Self.tabs._game.pgn() );
-				break;
-			case "output-history-array":
-				console.log( JSON.stringify( Self.tabs._active.history.stack ) );
-				//console.log( Self.tabs._game.history({ verbose: true }) );
-				break;
+			case "game-from-fen":
+				el = Self.els.board.parent();
+				game = new Chess(event.fen);
+				orientation = Self.els.board.parent().data("orientation");
 
-			case "history-go-start":
-			case "history-go-prev":
-			case "history-go-next":
-			case "history-go-end":
-				Self.tabs.historyGo(event.type.split("-")[2]);
+				if (orientation === "black") {
+					files = files.split("").reverse().join("");
+					ranks = ranks.split("").reverse().join("");
+				}
+
+				htm = [];
+				game.board().map((row, y) => {
+					row.map((square, x) => {
+						if (!square) return;
+						let pos = files.charAt(x) + ranks.charAt(y);
+						htm.push(`<piece class="${COLORS[square.color]}-${PIECES[square.type]} pos-${pos}"></piece>`);
+					});
+				});
+				// update DOM
+				Self.els.board.html(htm.join(""));
 				break;
 		}
 	}
