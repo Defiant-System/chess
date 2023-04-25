@@ -65,10 +65,11 @@ const chess = {
 			case "window.init":
 				break;
 			// custom events
+			case "load-fen-game":
 			case "new-game":
 				Self.dispatch({
 					type: "game-from-fen",
-					fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+					fen: event.arg || "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
 				});
 				// make sure "window title" is updated
 				Self.dispatch({ type: "after-move" });
@@ -251,18 +252,53 @@ const chess = {
 				Self.els.board.find(".move-to-pos, .castling-rook").removeClass("move-to-pos castling-rook");
 
 				if (turnColor === "black") {
+					let level = 1,
+						skill = 1,
+						fen = game.fen();
 					// simple ai move
-					// AI.makeBestMove({ level: 1, fen: game.fen(), callback: bestMove => {
-					// 	let from = bestMove.slice(0, 2),
-					// 		to = bestMove.slice(2),
-					// 		el = Self.els.board.find(".pos-"+ from),
-					// 		name = el.prop("classList")[0].split("-"),
-					// 		color = Self.getColorKey(name[0]),
-					// 		piece = Self.getPieceKey(name[1]),
-					// 		move = { from, to, color, piece };
-					// 	Self.dispatch({ type: "make-move", ...move });
-					// }});
+					AI.makeBestMove({ fen, level, skill, callback: bestMove => {
+						let from = bestMove.slice(0, 2),
+							to = bestMove.slice(2),
+							el = Self.els.board.find(".pos-"+ from),
+							name = el.prop("classList")[0].split("-"),
+							color = Self.getColorKey(name[0]),
+							piece = Self.getPieceKey(name[1]),
+							move = { from, to, color, piece };
+						Self.dispatch({ type: "make-move", ...move });
+					}});
 				}
+				break;
+			case "promote-pawn":
+				name = event.name || event.target.className.split("-")[0];
+				move = Self.moveAfterPromotion;
+				move.promotion = Self.getPieceKey(name);
+				// clean up
+				delete Self.moveAfterPromotion;
+				// hide lightbox
+				Self.els.board.parent().removeClass("show-pawn-promotion");
+
+				let res = game.move(move);
+				if (res && res.captured) {
+					let cc = res.color === "w" ? "b" : "w";
+					// remove captured piece
+					Self.els.board.find(`piece.pos-${res.to}.${COLORS[cc]}-${PIECES[res.captured]}`).remove();
+				}
+				// update pawn piece
+				piece = Self.els.board.find(`.${COLORS[move.color]}-${PIECES[move.piece]}.pos-${move.to}`);
+				piece.prop("className", `${COLORS[move.color]}-${name} pos-${move.to}`);
+				piece.addClass("active");
+
+				Self.dispatch({ ...move, type: "after-move" });
+				break;
+			case "output-fen-string":
+				console.log(game.fen());
+				break;
+			case "output-history-array":
+				console.log(JSON.stringify(Self.history.stack));
+				//console.log( game.history({ verbose: true }) );
+				break;
+			case "output-game-pgn":
+				console.log( game.pgn() );
 				break;
 		}
 	},

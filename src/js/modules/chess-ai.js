@@ -1,79 +1,52 @@
 
 const AI = {
 	async init() {
-		this.engine = new Worker("~/js/stockfish.js");
+		this.stack = [];
 		this.thinking = false;
-		this.time = {
-				wtime: 300000,
-				btime: 300000,
-				winc: 2000,
-				binc: 2000,
-			};
+		this.engine = new Worker("~/js/stockfish.js");
 
-		this.engine.onmessage = event => this.dispatch({ type: "get-message", data: event.data });
-		this.dispatch({ type: "post-message", cmd: "uci" });
+		this.engine.onmessage = this.dispatch;
+		this.engine.postMessage("uci");
 	},
 	makeBestMove(game) {
-
+		this.stack.push(game);
+		if (!this.thinking) {
+			// handle next game in stack
+			this.ponder();
+		}
 	},
 	ponder() {
+		let game = this.stack.shift(),
+			depth = "";
 
+		// Change thinking depth allowance.
+		switch (true) {
+			case (game.skill < 5): depth = 1; break;
+			case (game.skill < 10): depth = 2; break;
+			case (game.skill < 15): depth = 3; break;
+		}
+
+		this.thinking = game;
+		this.engine.postMessage(`position fen ${game.fen}`);
+		this.engine.postMessage(`setoption name Skill Level value ${game.skill}`);
+		this.engine.postMessage(`go depth ${depth}`);
 	},
 	dispatch(event) {
 		let Self = AI,
-			name,
-			value;
-		// console.log( event );
-		switch (event.type) {
-			case "get-message":
-				value = event.data.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/);
-				if (value) {
-					console.log({ from: match[1], to: match[2], promotion: match[3] });
-				} else {
-					console.log("INFO: ", event.data);
-				}
-				break;
-			case "post-message":
-				Self.engine.postMessage(event.cmd);
-				break;
+			data = event.data;
+
+		//console.log(data);
+		if (data.includes("bestmove")) {
+			// send best move to callback
+			let move = data.match(/bestmove (\w+)/)[1];
+			Self.thinking.callback(move);
+			// remove old game
+			Self.thinking = false;
+
+			if (Self.stack.length) {
+				// handle next game in stack
+				Self.ponder();
+			}
 		}
 	}
-	// reset() {
-
-	// },
-	// setSkillLevel(skill) {
-	// 	skill = Math.min(Math.max(skill, 0), 20);
-	// 	this.time.level = skill;
-		
-	// 	// Change thinking depth allowance.
-	// 	switch (true) {
-	// 		case (skill < 5): this.time.depth = "1"; break;
-	// 		case (skill < 10): this.time.depth = "2"; break;
-	// 		case (skill < 15): this.time.depth = "3"; break;
-	// 		default: this.time.depth = "";
-	// 	}
-	// 	this.dispatch({
-	// 		type: "post-message",
-	// 		cmd: `setoption name Skill Level value ${skill}`,
-	// 	});
-	// 	// Level 0 starts at 10
-	// 	let max_err = Math.round((skill * -0.5) + 10);
-	// 	this.dispatch({
-	// 		type: "post-message",
-	// 		cmd: `setoption name Skill Level Maximum Error value ${max_err}`,
-	// 	});
-	// 	// NOTE: Stockfish level 20 does not make errors (intentially), so these numbers have no effect on level 20.
-	// 	// Level 0 starts at 1
-	// 	let err_prob = Math.round((skill * 6.35) + 1);
-	// 	this.dispatch({
-	// 		type: "post-message",
-	// 		cmd: `setoption name Skill Level Probability value ${err_prob}`,
-	// 	});
-	// },
-	// setPlayerColor() {
-
-	// },
-	// start() {
-
-	// }
 };

@@ -26,6 +26,21 @@
 </MenuBar>
 
 <Menu for="toolbar-config">
+	<Menu name="Test Games&#8230;">
+		<Menu name="Fen 1" click="load-fen-game" arg="2n1r3/p1k2pp1/B1p3b1/P7/5bP1/2N1B3/1P2KP2/2R5 b - - 4 25"/>
+		<Menu name="Fen 2" click="load-fen-game" arg="4r3/p2k1pp1/3n2b1/PN6/6P1/4P3/1P2K3/2R5 w - - 1 29"/>
+		<Menu name="Fen 3" click="load-fen-game" arg="r1k4r/p2nb1p1/2b4p/1p1n1p2/2PP4/3Q1NB1/1P3PPP/R5K1 b - c3 0 19"/>
+		<Menu name="Fen 4" click="load-fen-game" arg="r2qkbnr/ppp2ppp/2n5/1B2pQ2/4P3/8/PPP2PPP/RNB1K2R b KQkq - 3 7"/>
+		<Menu name="Fen 5" click="load-fen-game" arg="4r3/8/2p2PPk/1p6/pP2p1R1/P1B5/2P2K2/3r4 w - - 1 45"/>
+		<Menu name="Fen 6" click="load-fen-game" arg="7k/6R1/8/1p6/pP6/P1B5/2P2K1p/8 b - - 1 48"/>
+		<Menu name="Fen 7" click="load-fen-game" arg="4r3/5P2/2p5/1p5k/QP2p1R1/P1B5/2P2K1p/3r4 w - - 1 48"/>
+		<Menu name="Fen 8" click="load-fen-game" arg="r3k2r/p7/3b1p2/2NP3p/2Q5/8/PPPB1PPP/R3K2R w KQk - 1 17"/>
+		<Menu name="Fen 9" click="load-fen-game" arg="r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq e3 0 1"/>
+		<Menu name="Fen 10" click="load-fen-game" arg="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"/>
+		<Menu name="Fen 11" click="load-fen-game" arg="rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1"/>
+		<Menu name="Fen 12" click="load-fen-game" arg="N3R3/1kPp4/8/6bp/8/8/PPP2PPP/R5K1 w - - 3 26"/>
+	</Menu>
+	<Menu type="divider"/>
 	<Menu name="Fen String" click="output-fen-string"/>
 	<Menu name="Portable Game Notation" click="output-game-pgn"/>
 	<Menu name="History" click="output-history-array"/>
