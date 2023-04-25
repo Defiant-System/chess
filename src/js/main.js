@@ -1,5 +1,6 @@
 
 @import "modules/chess.0.10.3.js";
+@import "modules/chess-ai.js";
 @import "modules/pgn-parser.js";
 
 
@@ -38,6 +39,9 @@ const chess = {
 		// create history stack
 		this.history = new window.History;
 
+		// init objects
+		AI.init();
+
 		// temp
 		this.dispatch({ type: "new-game" });
 	},
@@ -66,6 +70,8 @@ const chess = {
 					type: "game-from-fen",
 					fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
 				});
+				// make sure "window title" is updated
+				Self.dispatch({ type: "after-move" });
 				break;
 			case "reset-board":
 				Self.els.board.find(".active, .castling-rook").removeClass("active castling-rook");
