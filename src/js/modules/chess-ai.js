@@ -50,3 +50,6 @@ const AI = {
 		}
 	}
 };
+
+// auto init AI object
+AI.init();

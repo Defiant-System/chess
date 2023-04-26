@@ -1,12 +1,14 @@
 <content>
-	<div class="chess show-pawn-promotion1 show-game-over1" data-orientation="white" data-click="reset-board">
+	<!-- show-new-game show-pawn-promotion show-game-over -->
+	<div class="chess show-new-game" data-theme="blue" data-orientation="white" data-click="reset-board">
 		<div class="board white-turn" data-click="focus-piece">
 			<!--
 			<piece class="black-rook pos-a8"></piece><piece class="black-knight pos-b8"></piece><piece class="black-bishop pos-c8"></piece><piece class="black-queen pos-d8"></piece><piece class="black-king pos-e8"></piece><piece class="black-bishop pos-f8"></piece><piece class="black-knight pos-g8"></piece><piece class="black-rook pos-h8"></piece><piece class="black-pawn pos-a7"></piece><piece class="black-pawn pos-b7"></piece><piece class="black-pawn pos-c7"></piece><piece class="black-pawn pos-d7"></piece><piece class="black-pawn pos-e7"></piece><piece class="black-pawn pos-f7"></piece><piece class="black-pawn pos-g7"></piece><piece class="black-pawn pos-h7"></piece>
 			<piece class="white-pawn pos-a2"></piece><piece class="white-pawn pos-b2"></piece><piece class="white-pawn pos-c2"></piece><piece class="white-pawn pos-d2"></piece><piece class="white-pawn pos-e2"></piece><piece class="white-pawn pos-f2"></piece><piece class="white-pawn pos-g2"></piece><piece class="white-pawn pos-h2"></piece><piece class="white-rook pos-a1"></piece><piece class="white-knight pos-b1"></piece><piece class="white-bishop pos-c1"></piece><piece class="white-queen pos-d1"></piece><piece class="white-king pos-e1"></piece><piece class="white-bishop pos-f1"></piece><piece class="white-knight pos-g1"></piece><piece class="white-rook pos-h1"></piece>
 			<piece class="from-pos pos-e4"></piece>
 			<piece class="can-move pos-e4"></piece>
-			<piece class="can-move pos-e3"></piece>-->
+			<piece class="can-move pos-e3"></piece>
+			-->
 		</div>
 		<div class="ghost-pieces"></div>
 
@@ -45,11 +47,32 @@
 			<coord>h</coord>
 		</coords>
 
+		<div class="dialog new-game">
+			<h2>New Game</h2>
+			<div class="opt-row">
+				<div data-click="new-human-vs-cpu">
+					Human</br>
+					vs</br>
+					CPU
+				</div>
+				<div data-click="new-human-vs-human">
+					Human</br>
+					vs</br>
+					Human
+				</div>
+				<div class="disabled" data-click="new-human-vs-friend">
+					Human</br>
+					vs</br>
+					Friend
+				</div>
+			</div>
+		</div>
+
 		<div class="dialog game-over">
 			<h2>Game over</h2>
 			<h4>Game drawn by stalemate</h4>
 			<div class="button-row">
-				<button>Rematch</button>
+				<span class="button" data-click="show-new-game-view">New Game</span>
 			</div>
 		</div>
 

@@ -28,19 +28,20 @@ const chess = {
 	init() {
 		// fast references
 		this.els = {
+			content: window.find("content"),
+			chess: window.find("content > .chess"),
 			board: window.find(".board"),
 			ghost: window.find(".ghost-pieces"),
 			history: window.find(".move-history"),
+			movement: window.find(".movement-indicator"),
 			hBtnStart: window.find("[data-click='history-go-start']"),
 			hBtnPrev: window.find("[data-click='history-go-prev']"),
 			hBtnNext: window.find("[data-click='history-go-next']"),
 			hBtnEnd: window.find("[data-click='history-go-end']"),
 		};
+
 		// create history stack
 		this.history = new window.History;
-
-		// init objects
-		AI.init();
 
 		// temp
 		this.dispatch({ type: "new-game" });
@@ -80,14 +81,12 @@ const chess = {
 				Self.els.board.removeClass("can-move-squares");
 				break;
 			case "rotate-board":
-				el = Self.els.board.parent();
-				orientation = el.data("orientation");
-				el.data("orientation", orientation === "white" ? "black" : "white");
+				orientation = Self.els.chess.data("orientation");
+				Self.els.chess.data("orientation", orientation === "white" ? "black" : "white");
 				break;
 			case "game-from-fen":
-				el = Self.els.board.parent();
 				game = new Chess(event.fen);
-				orientation = Self.els.board.parent().data("orientation");
+				orientation = Self.els.chess.data("orientation");
 
 				if (orientation === "black") {
 					files = files.split("").reverse().join("");
@@ -193,7 +192,7 @@ const chess = {
 							}
 							
 							// show lightbox
-							return Self.els.board.parent().addClass("show-pawn-promotion");
+							return Self.els.chess.addClass("show-pawn-promotion");
 						}
 
 						let res = game.move(move);
@@ -223,6 +222,9 @@ const chess = {
 						.scrollTop(1e5);
 					
 					Self.dispatch({ type: "update-history-list" });
+
+					// show movement line
+					Self.dispatch({ ...move, type: "show-movement-indicator" });
 				}
 
 				// reset kings
@@ -275,7 +277,7 @@ const chess = {
 				// clean up
 				delete Self.moveAfterPromotion;
 				// hide lightbox
-				Self.els.board.parent().removeClass("show-pawn-promotion");
+				Self.els.chess.removeClass("show-pawn-promotion");
 
 				let res = game.move(move);
 				if (res && res.captured) {
@@ -290,6 +292,31 @@ const chess = {
 
 				Self.dispatch({ ...move, type: "after-move" });
 				break;
+			case "show-movement-indicator":
+				// show movement line
+				Self.els.movement.addClass("show");
+
+				let boxSize = parseInt(Self.els.content.cssProp("--box-size"), 10),
+					data = {
+						x1: (5 * boxSize) - (boxSize >> 1),
+						y1: (7 * boxSize) - (boxSize >> 1),
+						x2: (5 * boxSize) - (boxSize >> 1),
+						y2: (5 * boxSize) - (boxSize >> 1),
+					};
+
+				Self.els.movement.find("line").attr(data);
+				break;
+				
+			case "show-new-game-view":
+				Self.els.chess.removeClass("show-game-over").addClass("show-new-game");
+				break;
+			case "new-human-vs-cpu":
+				break;
+			case "new-human-vs-human":
+				break;
+			case "new-human-vs-friend":
+				break;
+
 			case "output-fen-string":
 				console.log(game.fen());
 				break;

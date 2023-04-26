@@ -8,8 +8,8 @@ content {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	--box-size: 78px;
 	display: flex;
+	--box-size: 78px;
 
 	.chess {
 		width: calc( var(--box-size) * 8 );
@@ -17,24 +17,19 @@ content {
 		position: relative;
 		font-size: 0;
 		box-shadow: 0 2px 7px rgba(0,0,0,0.35);
-		//box-shadow: 0 0 0 2px #5e74a1;
 		margin: 11px;
-		//pointer-events: none;
 
 		&[data-theme="blue"] {
 			&:before {
 				filter: none;
 			}
 		}
-		&[data-theme="gray"] {
-			&:before {
-				filter: grayscale(1);
-			}
-		}
+
 		&[data-theme="brown"] {
 			&:before {
 				filter: hue-rotate(160deg) brightness(0.85) sepia(.5);
 			}
+
 			coords {
 				color: #dfd1b7;
 
@@ -42,6 +37,7 @@ content {
 				&.files coord:nth-of-type(even) { color: #a78a6b; }
 
 			}
+
 			.board piece {
 				&.white-rook:after,
 				&.white-knight:after,
@@ -85,6 +81,11 @@ content {
 			z-index: 2;
 			background: rgba(0,0,0,.2);
 			backdrop-filter: blur(1px);
+		}
+
+		&.show-new-game {
+			&:after,
+			.new-game { display: block; }
 		}
 
 		&.show-game-over {
@@ -439,13 +440,13 @@ content {
 
 	h2 {
 		font-size: 23px;
-		font-weight: 200;
+		font-weight: 400;
 		margin-bottom: 2px;
 	}
 
 	h4 {
-		font-size: 15px;
-		font-weight: 200;
+		font-size: 17px;
+		font-weight: 400;
 		margin-bottom: 2px;
 	}
 
@@ -461,22 +462,45 @@ content {
 		backdrop-filter: blur(17px);
 		z-index: 3;
 
+		&.new-game {
+			width: 320px;
+			// height: 130px;
+			padding: 17px;
+			font-size: 15px;
+			line-height: 1.2;
+			text-align: center;
+
+			.opt-row {
+				> div {
+					display: inline-block;
+					position: relative;
+					width: 80px;
+					padding: 5px 0 7px;
+					margin: 9px 5px;
+					background: rgba(0,0,0,.15);
+					border: 2px solid #00000050;
+					border-radius: 5px;
+					cursor: pointer;
+
+					&:not(.disabled):hover {
+						border-color: #ffffffc0
+					}
+
+					&.disabled {
+						opacity: .5;
+						cursor: default;
+					}
+				}
+			}
+		}
+
 		&.game-over {
 			width: 340px;
 			height: 130px;
 			padding: 17px;
 			font-size: 15px;
-			font-weight: 200;
 			line-height: 1.35;
 			text-align: center;
-
-			.button-row {
-				margin-top: 13px;
-
-				button {
-					max-width: 85px;
-				}
-			}
 		}
 
 		&.pawn-promotion {
@@ -522,6 +546,24 @@ content {
 				}
 			}
 		}
+
+		.button-row {
+			margin-top: 13px;
+
+			.button {
+				background: rgba(0,0,0,.15);
+				border: 2px solid #00000050;
+				border-radius: 5px;
+				padding: 2px 7px;
+				display: inline-block;
+				cursor: pointer;
+				// max-width: 85px;
+
+				&:hover {
+					border-color: #ffffffc0
+				}
+			}
+		}
 	}
 
 	.ghost-pieces {
@@ -540,6 +582,8 @@ content {
 		z-index: 2;
 		opacity: 0.4;
 		filter: drop-shadow(0 3px 7px #000);
+
+		&.show { display: block; }
 	}
 
 	.board {
