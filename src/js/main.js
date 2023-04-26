@@ -310,11 +310,11 @@ const chess = {
 			case "show-new-game-view":
 				Self.els.chess.removeClass("show-game-over").addClass("show-new-game");
 				break;
-			case "new-human-vs-cpu":
+			case "new-vs-cpu":
 				break;
-			case "new-human-vs-human":
+			case "new-vs-human":
 				break;
-			case "new-human-vs-friend":
+			case "new-vs-friend":
 				break;
 
 			case "output-fen-string":

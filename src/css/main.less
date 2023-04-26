@@ -465,7 +465,7 @@ content {
 		&.new-game {
 			width: 320px;
 			// height: 130px;
-			padding: 17px;
+			padding: 17px 17px 21px;
 			font-size: 15px;
 			line-height: 1.2;
 			text-align: center;
@@ -474,16 +474,51 @@ content {
 				> div {
 					display: inline-block;
 					position: relative;
-					width: 80px;
+					width: 67px;
+					height: 67px;
 					padding: 5px 0 7px;
 					margin: 9px 5px;
 					background: rgba(0,0,0,.15);
 					border: 2px solid #00000050;
 					border-radius: 5px;
+					transition: all 80ms;
 					cursor: pointer;
 
+					&.icon-cpu:before { background-image: url(~/icons/icon-cpu.png); }
+					&.icon-user:before { background-image: url(~/icons/icon-user.png); }
+					&.icon-friend:before { background-image: url(~/icons/icon-friend.png); }
+
+					&:before {
+						content: "";
+						// background: rgba(0,0,0,.15);
+						background-repeat: no-repeat;
+						background-size: 100% 100%;
+						background-position: 50% 50%;
+						position: absolute;
+						top: 5px;
+						left: 5px;
+						width: 53px;
+						height: 53px;
+						opacity: .75;
+					}
+
+					span {
+						position: absolute;
+						bottom: -23px;
+						left: 0;
+						right: 0;
+						height: 23px;
+						padding-top: 4px;
+						background: transparent;
+					}
+
 					&:not(.disabled):hover {
-						border-color: #ffffffc0
+						background: rgba(255,255,255,.15);
+						border-color: #ffffffc0;
+
+						&:before {
+							// filter: invert(100%) brightness(1.5);
+						}
 					}
 
 					&.disabled {
