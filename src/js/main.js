@@ -257,20 +257,16 @@ const chess = {
 				if (game.in_checkmate()) {
 					Self.els.chess.addClass("show-game-over");
 
-					console.log( game.game_over() );
-					console.log( game );
-					
-					return console.log("check mate");
+					let winner = game.turn() === "b" ? "White" : "Black";
+					return Self.els.content.find(`.dialog.game-over h4`).html(`${winner} wins!`);
 				}
 				if (game.in_draw()) {
 					Self.els.chess.addClass("show-game-over");
-					Self.els.find(`.dialog.game-over h4`).html("Game draw");
-					return;
+					return Self.els.content.find(`.dialog.game-over h4`).html("Game draw");
 				}
 				if (game.in_stalemate()) {
-					Self.els.find(`.dialog.game-over h4`).html("Game drawn by stalemate");
 					Self.els.chess.addClass("show-game-over");
-					return;
+					return Self.els.content.find(`.dialog.game-over h4`).html("Game drawn by stalemate");
 				}
 
 				// update window title
@@ -343,14 +339,19 @@ const chess = {
 						fen = game.fen();
 					// simple ai move
 					AI.makeBestMove({ fen, level, skill, callback: bestMove => {
-						let from = bestMove.slice(0, 2),
-							to = bestMove.slice(2),
-							el = this.els.board.find(".pos-"+ from),
-							name = el.prop("classList")[0].split("-"),
-							color = this.getColorKey(name[0]),
-							piece = this.getPieceKey(name[1]),
-							move = { from, to, color, piece };
-						this.dispatch({ type: "make-move", ...move });
+						try {
+							let from = bestMove.slice(0, 2),
+								to = bestMove.slice(2),
+								el = this.els.board.find(".pos-"+ from),
+								name = el.prop("classList")[0].split("-"),
+								color = this.getColorKey(name[0]),
+								piece = this.getPieceKey(name[1]),
+								move = { from, to, color, piece };
+							this.dispatch({ type: "make-move", ...move });
+						} catch (exep) {
+							console.log(bestMove);
+							console.log(exep);
+						}
 					}});
 				}
 				break;
