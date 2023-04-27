@@ -2,6 +2,7 @@
 @import "modules/chess.0.10.3.js";
 @import "modules/chess-ai.js";
 @import "modules/pgn-parser.js";
+@import "modules/test.js";
 
 
 const FILES = "abcdefgh";
@@ -44,7 +45,7 @@ const chess = {
 		this.history = new window.History;
 
 		// temp
-		this.dispatch({ type: "new-game" });
+		// this.dispatch({ type: "new-game" });
 	},
 	dispatch(event) {
 		let Self = chess,
@@ -68,9 +69,13 @@ const chess = {
 			// custom events
 			case "load-fen-game":
 			case "new-game":
+				// reset board
+				Self.els.chess.removeClass("show-game-over show-new-game");
+				// start new game
 				Self.dispatch({
 					type: "game-from-fen",
 					fen: event.arg || "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+					opponent: event.opponent || "AI",
 				});
 				// make sure "window title" is updated
 				Self.dispatch({ type: "after-move" });
@@ -87,6 +92,8 @@ const chess = {
 			case "game-from-fen":
 				game = new Chess(event.fen);
 				orientation = Self.els.chess.data("orientation");
+				// set opponent
+				Self.opponent = event.opponent;
 
 				if (orientation === "black") {
 					files = files.split("").reverse().join("");
@@ -104,6 +111,20 @@ const chess = {
 				// update DOM
 				Self.els.board.html(htm.join(""));
 				break;
+				
+			case "show-new-game-view":
+				Self.els.chess.removeClass("show-game-over").addClass("show-new-game");
+				break;
+			case "new-vs-cpu":
+				Self.dispatch({ type: "new-game", opponent: "AI" });
+				break;
+			case "new-vs-human":
+				Self.dispatch({ type: "new-game", opponent: "User" });
+				break;
+			case "new-vs-friend":
+				Self.dispatch({ type: "new-game", opponent: "Friend" });
+				break;
+
 			case "focus-piece":
 				el = $(event.target);
 				name = el.prop("className");
@@ -253,22 +274,8 @@ const chess = {
 				// remove previous possible moves
 				Self.els.board.find(".move-to-pos, .castling-rook").removeClass("move-to-pos castling-rook");
 
-				if (turnColor === "black") {
-					let level = 1,
-						skill = 1,
-						fen = game.fen();
-					// simple ai move
-					AI.makeBestMove({ fen, level, skill, callback: bestMove => {
-						let from = bestMove.slice(0, 2),
-							to = bestMove.slice(2),
-							el = Self.els.board.find(".pos-"+ from),
-							name = el.prop("classList")[0].split("-"),
-							color = Self.getColorKey(name[0]),
-							piece = Self.getPieceKey(name[1]),
-							move = { from, to, color, piece };
-						Self.dispatch({ type: "make-move", ...move });
-					}});
-				}
+				// process opponent turn / movement
+				Self.opponentTurn(turnColor);
 				break;
 			case "promote-pawn":
 				name = event.name || event.target.className.split("-")[0];
@@ -293,30 +300,19 @@ const chess = {
 				Self.dispatch({ ...move, type: "after-move" });
 				break;
 			case "show-movement-indicator":
-				// show movement line
-				Self.els.movement.addClass("show");
+				// // show movement line
+				// Self.els.movement.addClass("show");
 
-				let boxSize = parseInt(Self.els.content.cssProp("--box-size"), 10),
-					data = {
-						x1: (5 * boxSize) - (boxSize >> 1),
-						y1: (7 * boxSize) - (boxSize >> 1),
-						x2: (5 * boxSize) - (boxSize >> 1),
-						y2: (5 * boxSize) - (boxSize >> 1),
-					};
+				// let boxSize = parseInt(Self.els.content.cssProp("--box-size"), 10),
+				// 	data = {
+				// 		x1: (5 * boxSize) - (boxSize >> 1),
+				// 		y1: (7 * boxSize) - (boxSize >> 1),
+				// 		x2: (5 * boxSize) - (boxSize >> 1),
+				// 		y2: (5 * boxSize) - (boxSize >> 1),
+				// 	};
 
-				Self.els.movement.find("line").attr(data);
+				// Self.els.movement.find("line").attr(data);
 				break;
-				
-			case "show-new-game-view":
-				Self.els.chess.removeClass("show-game-over").addClass("show-new-game");
-				break;
-			case "new-vs-cpu":
-				break;
-			case "new-vs-human":
-				break;
-			case "new-vs-friend":
-				break;
-
 			case "output-fen-string":
 				console.log(game.fen());
 				break;
@@ -326,6 +322,32 @@ const chess = {
 				break;
 			case "output-game-pgn":
 				console.log( game.pgn() );
+				break;
+		}
+	},
+	opponentTurn(turnColor) {
+		switch (this.opponent) {
+			case "AI":
+				if (turnColor === "black") {
+					let level = 1,
+						skill = 1,
+						fen = game.fen();
+					// simple ai move
+					AI.makeBestMove({ fen, level, skill, callback: bestMove => {
+						let from = bestMove.slice(0, 2),
+							to = bestMove.slice(2),
+							el = this.els.board.find(".pos-"+ from),
+							name = el.prop("classList")[0].split("-"),
+							color = this.getColorKey(name[0]),
+							piece = this.getPieceKey(name[1]),
+							move = { from, to, color, piece };
+						this.dispatch({ type: "make-move", ...move });
+					}});
+				}
+				break;
+			case "User":
+				break;
+			case "Friend":
 				break;
 		}
 	},
