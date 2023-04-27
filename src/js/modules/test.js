@@ -30,16 +30,16 @@ let Test = {
 	init() {
 		// setTimeout(() => chess.els.content.find(`.opt-row .icon-user`).trigger("click"), 200);
 		setTimeout(() => chess.els.content.find(`.opt-row .icon-cpu`).trigger("click"), 200);
-		setTimeout(() => this.gameFromPgn(), 300);
+		setTimeout(this.gameFromFen, 300);
 	},
 	gameFromPgn() {
 		chess.dispatch({ type: "game-from-pgn", pgn });
 	},
-	testFen() {
+	gameFromFen() {
 		// let arg = `N3R3/2Qp4/k7/6bp/8/8/PPP2PPP/R5K1 w - - 3 28`;
-		let arg = `r3kbnr/ppp1pppp/2n5/4P3/6Q1/8/PPPB1PPP/RN2KBNR b KQkq - 0 6`;
-
-		chess.dispatch({ type: "new-game", arg });
+		let arg = `r3kbnr/ppp1pppp/6n1/6Q1/8/8/PPPB1PPP/RN2KBNR b KQkq - 3 8`;
+		// let arg = `rnbqk2r/pppp1ppp/5n2/4p3/1b1P4/2N1P3/PPPB1PPP/R2QKBNR b KQkq - 3 4`;
+		chess.dispatch({ type: "load-fen-game", opponent: "User", arg });
 	}
 };
 

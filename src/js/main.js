@@ -37,15 +37,13 @@ const chess = {
 
 		// init sub objects
 		Object.keys(this).filter(i => this[i].init).map(i => this[i].init());
-
-		// temp
-		// this.dispatch({ type: "new-game" });
 	},
 	dispatch(event) {
 		let Self = chess,
-			orientation,
 			files = FILES,
 			ranks = RANKS,
+			orientation,
+			theme,
 			board,
 			square,
 			piece,
@@ -62,7 +60,6 @@ const chess = {
 				break;
 			// custom events
 			case "load-fen-game":
-			case "new-game":
 				// reset board
 				Self.els.chess.removeClass("show-game-over show-new-game");
 				// start new game
@@ -74,14 +71,26 @@ const chess = {
 				// make sure "window title" is updated
 				Self.dispatch({ type: "after-move" });
 				break;
+			case "new-game":
+				// reset board
+				Self.els.chess
+					.removeClass("show-game-over show-pawn-promotion")
+					.addClass("show-new-game");
+				// reset game object
+				game.reset();
+				break;
 			case "reset-board":
 				Self.els.board.find(".active, .castling-rook").removeClass("active castling-rook");
 				Self.els.board.find(".can-move").remove();
 				Self.els.board.removeClass("can-move-squares");
 				break;
 			case "rotate-board":
-				orientation = Self.els.chess.data("orientation");
-				Self.els.chess.data("orientation", orientation === "white" ? "black" : "white");
+				orientation = Self.els.chess.data("orientation") === "white" ? "black" : "white";
+				Self.els.chess.data({ orientation });
+				break;
+			case "set-board-theme":
+				theme = event.arg || "blue";
+				Self.els.chess.data({ theme });
 				break;
 			case "game-from-fen":
 				game = new Chess(event.fen);
@@ -127,13 +136,13 @@ const chess = {
 				Self.els.chess.removeClass("show-game-over").addClass("show-new-game");
 				break;
 			case "new-vs-cpu":
-				Self.dispatch({ type: "new-game", opponent: "AI" });
+				Self.dispatch({ type: "load-fen-game", opponent: "AI" });
 				break;
 			case "new-vs-human":
-				Self.dispatch({ type: "new-game", opponent: "User" });
+				Self.dispatch({ type: "load-fen-game", opponent: "User" });
 				break;
 			case "new-vs-friend":
-				Self.dispatch({ type: "new-game", opponent: "Friend" });
+				Self.dispatch({ type: "load-fen-game", opponent: "Friend" });
 				break;
 
 			case "focus-piece":
@@ -190,9 +199,7 @@ const chess = {
 				Self.els.board.append(`<piece class="move-from-pos pos-${event.from}"></piece>`);
 
 				let castle = Self.isCastling(event);
-				console.log( castle );
 				if (castle) {
-					console.log( event );
 					Self.els.board
 						.find(`.${COLORS[castle.color]}-${PIECES[castle.piece]}.pos-${castle.from}`)
 						.cssSequence("moving to-"+ castle.to, "transitionend", el => {
@@ -336,7 +343,6 @@ const chess = {
 				break;
 			default:
 				if (event.el) {
-					console.log( event );
 					// proxy event
 					name = event.el.parents(`[data-section]`).data("section");
 					if (Self[name]) Self[name].dispatch(event);
@@ -393,7 +399,7 @@ const chess = {
 			if (move.from === "e8" && move.to === "g8") {
 				return { piece: "r", color: "b", from: "h8", to: "f8" };
 			}
-			if (move.from === "e1" && move.to === "c1") {
+			if (move.from === "e8" && move.to === "c8") {
 				return { piece: "r", color: "b", from: "a8", to: "d8" };
 			}
 		}
