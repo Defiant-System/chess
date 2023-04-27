@@ -1,8 +1,8 @@
 
-@import "modules/chess.0.10.3.js";
-@import "modules/chess-ai.js";
-@import "modules/pgn-parser.js";
-@import "modules/test.js";
+@import "./modules/chess.0.10.3.js";
+@import "./modules/chess-ai.js";
+@import "./modules/pgn-parser.js";
+@import "./modules/test.js";
 
 
 const FILES = "abcdefgh";
@@ -21,7 +21,6 @@ const PIECES = {
 };
 
 let game;
-let pgn = ``;
 
 
 
@@ -33,16 +32,11 @@ const chess = {
 			chess: window.find("content > .chess"),
 			board: window.find(".board"),
 			ghost: window.find(".ghost-pieces"),
-			history: window.find(".move-history"),
 			movement: window.find(".movement-indicator"),
-			hBtnStart: window.find("[data-click='history-go-start']"),
-			hBtnPrev: window.find("[data-click='history-go-prev']"),
-			hBtnNext: window.find("[data-click='history-go-next']"),
-			hBtnEnd: window.find("[data-click='history-go-end']"),
 		};
 
-		// create history stack
-		this.history = new window.History;
+		// init sub objects
+		Object.keys(this).filter(i => this[i].init).map(i => this[i].init());
 
 		// temp
 		// this.dispatch({ type: "new-game" });
@@ -110,6 +104,23 @@ const chess = {
 				});
 				// update DOM
 				Self.els.board.html(htm.join(""));
+				break;
+
+			case "game-from-pgn":
+				// populate history
+				PGN.parse(event.pgn).moves.map(move => Self.history.addEntry(move));
+				Self.history.dispatch({ type: "render-history-list" });
+
+				game = new Chess();
+				game.load_pgn(event.pgn);
+				Self.dispatch({ type: "game-from-fen", fen: game.fen() });
+
+				if (Self.history.history.current) {
+					item = Self.history.history.current;
+					Self.history.els.board.append(`<piece class="move-from-pos pos-${item.from}"></piece>`);
+					Self.history.els.board.find(`.pos-${item.to}`).addClass("active");
+					Self.history.els.history.find(".move:last").addClass("active");
+				}
 				break;
 				
 			case "show-new-game-view":
@@ -179,7 +190,9 @@ const chess = {
 				Self.els.board.append(`<piece class="move-from-pos pos-${event.from}"></piece>`);
 
 				let castle = Self.isCastling(event);
+				console.log( castle );
 				if (castle) {
+					console.log( event );
 					Self.els.board
 						.find(`.${COLORS[castle.color]}-${PIECES[castle.piece]}.pos-${castle.from}`)
 						.cssSequence("moving to-"+ castle.to, "transitionend", el => {
@@ -235,14 +248,7 @@ const chess = {
 					delete move.type;
 					
 					// push move to history
-					Self.history.push(move);
-
-					// update move history list
-					Self.els.history
-						.append(`<span class="move"><piece class="${COLORS[event.color]}-${PIECES[event.piece]}"></piece>${event.to}</span>`)
-						.scrollTop(1e5);
-					
-					Self.dispatch({ type: "update-history-list" });
+					Self.history.addEntry(move);
 
 					// show movement line
 					Self.dispatch({ ...move, type: "show-movement-indicator" });
@@ -328,6 +334,13 @@ const chess = {
 			case "output-game-pgn":
 				console.log( game.pgn() );
 				break;
+			default:
+				if (event.el) {
+					console.log( event );
+					// proxy event
+					name = event.el.parents(`[data-section]`).data("section");
+					if (Self[name]) Self[name].dispatch(event);
+				}
 		}
 	},
 	opponentTurn(turnColor) {
@@ -339,19 +352,14 @@ const chess = {
 						fen = game.fen();
 					// simple ai move
 					AI.makeBestMove({ fen, level, skill, callback: bestMove => {
-						try {
-							let from = bestMove.slice(0, 2),
-								to = bestMove.slice(2),
-								el = this.els.board.find(".pos-"+ from),
-								name = el.prop("classList")[0].split("-"),
-								color = this.getColorKey(name[0]),
-								piece = this.getPieceKey(name[1]),
-								move = { from, to, color, piece };
-							this.dispatch({ type: "make-move", ...move });
-						} catch (exep) {
-							console.log(bestMove);
-							console.log(exep);
-						}
+						let from = bestMove.slice(0, 2),
+							to = bestMove.slice(2),
+							el = this.els.board.find(".pos-"+ from),
+							name = el.prop("classList")[0].split("-"),
+							color = this.getColorKey(name[0]),
+							piece = this.getPieceKey(name[1]),
+							move = { from, to, color, piece };
+						this.dispatch({ type: "make-move", ...move });
 					}});
 				}
 				break;
@@ -401,7 +409,8 @@ const chess = {
 					&& move.from.charAt(1) === "7"
 					&& move.to.charAt(1) === "8";
 		return bPromo || wPromo;
-	}
+	},
+	history: @import "./modules/history.js",
 };
 
 window.exports = chess;
