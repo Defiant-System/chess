@@ -255,13 +255,22 @@ const chess = {
 					Self.els.board.find(`.${turnColor}-king`).addClass("in-check");
 				}
 				if (game.in_checkmate()) {
+					Self.els.chess.addClass("show-game-over");
+
+					console.log( game.game_over() );
+					console.log( game );
+					
 					return console.log("check mate");
 				}
 				if (game.in_draw()) {
-					return console.log("draw");
+					Self.els.chess.addClass("show-game-over");
+					Self.els.find(`.dialog.game-over h4`).html("Game draw");
+					return;
 				}
 				if (game.in_stalemate()) {
-					return console.log("stalemate");
+					Self.els.find(`.dialog.game-over h4`).html("Game drawn by stalemate");
+					Self.els.chess.addClass("show-game-over");
+					return;
 				}
 
 				// update window title
