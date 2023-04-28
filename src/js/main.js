@@ -197,6 +197,8 @@ const chess = {
 				Self.els.board.find(".move-from-pos, .can-move").remove();
 				// place holder
 				Self.els.board.append(`<piece class="move-from-pos pos-${event.from}"></piece>`);
+				// play sound
+			 	window.audio.play("move");
 
 				let castle = Self.isCastling(event);
 				if (castle) {
@@ -334,17 +336,14 @@ const chess = {
 						y1: (fY * boxSize) - halfBs,
 						x2: (tX * boxSize) - halfBs,
 						y2: (tY * boxSize) - halfBs,
-					};
-
-				let x = data.x1 - data.x2,
+					},
+					x = data.x1 - data.x2,
 					y = data.y1 - data.y2,
-					len = Math.sqrt(x * x + y * y) - halfBs;
-
-				console.log( len );
-
-				data.y2 = 390;
-				// data.x2 = 100;
-
+					len = Math.sqrt(x * x + y * y) - halfBs,
+					rad = Math.atan2(x, y);
+				// make arrow shorter
+				data.y2 = data.y1 - (len * Math.cos(rad));
+				data.x2 = data.x1 - (len * Math.sin(rad));
 				// update SVG element
 				Self.els.movement.find("line").attr(data);
 				// clean up board UI

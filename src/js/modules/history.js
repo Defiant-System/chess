@@ -164,6 +164,9 @@
 				Self.els.ghost.html("");
 
 				APP.dispatch({ type: "after-move" });
+
+				// show movement line
+				APP.dispatch({ ...historyItem, type: "show-movement-indicator" });
 				break;
 		}
 	},

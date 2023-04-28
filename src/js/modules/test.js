@@ -28,18 +28,19 @@ Nxd4 17. Nxd4 Ba4 18. Bb3 Bxb3 19. Nxb3 Rxd1+ 20. Rxd1 Rc8
 
 let Test = {
 	init() {
+		return;
 		setTimeout(() => chess.els.content.find(`.opt-row .icon-user`).trigger("click"), 200);
+		return setTimeout(this.gameFromPgn, 300);
 
 		setTimeout(() => {
-			chess.els.content.find(`.pos-b2`).trigger("click");
-			chess.els.content.find(`.pos-b4`).trigger("click");
-			// chess.els.content.find(`.pos-b1`).trigger("click");
-			// chess.els.content.find(`.pos-c3`).trigger("click");
+			// chess.els.content.find(`.pos-b2`).trigger("click");
+			// chess.els.content.find(`.pos-b4`).trigger("click");
+			chess.els.content.find(`.pos-b1`).trigger("click");
+			chess.els.content.find(`.pos-c3`).trigger("click");
 		}, 300);
 
 		return;
 		setTimeout(() => chess.els.content.find(`.opt-row .icon-cpu`).trigger("click"), 200);
-		setTimeout(this.gameFromPgn, 300);
 
 		// setTimeout(() => chess.els.content.find(`.move-history .move:nth(92)`).trigger("click"), 500);
 	},

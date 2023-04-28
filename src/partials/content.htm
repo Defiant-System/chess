@@ -49,17 +49,36 @@
 
 		<div class="dialog new-game">
 			<h2>New Game</h2>
-			<h4>Choose Opponent</h4>
-			<div class="opt-row">
-				<div class="icon-cpu" data-click="new-vs-cpu">
-					<span>CPU</span>
+
+			<div class="main-menu">
+				<h4>Choose Opponent</h4>
+				<div class="opt-opponents">
+					<div class="icon-cpu" data-click="new-vs-cpu">
+						<span>CPU</span>
+					</div>
+					<div class="icon-user" data-click="new-vs-human">
+						<span>You</span>
+					</div>
+					<div class="icon-friend disabled" data-click="new-vs-friend">
+						<span>Friend</span>
+					</div>
 				</div>
-				<div class="icon-user" data-click="new-vs-human">
-					<span>You</span>
+			</div>
+
+			<div class="cpu-menu">
+				<h4>Choose Difficulty</h4>
+				<div class="opt-difficulty">
+					<span>1</span>
+					<span>2</span>
+					<span>3</span>
+					<span>4</span>
+					<span>5</span>
 				</div>
-				<div class="icon-friend disabled" data-click="new-vs-friend">
-					<span>Friend</span>
-				</div>
+			</div>
+
+			<div class="friend-menu">
+				<span>Bill Gates</span>
+				<span>Steve Jobs</span>
 			</div>
 		</div>
 
