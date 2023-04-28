@@ -318,18 +318,38 @@ const chess = {
 				Self.dispatch({ ...move, type: "after-move" });
 				break;
 			case "show-movement-indicator":
-				// // show movement line
-				// Self.els.movement.addClass("show");
+				// show movement line
+				Self.els.movement.addClass("show");
 
-				// let boxSize = parseInt(Self.els.content.cssProp("--box-size"), 10),
-				// 	data = {
-				// 		x1: (5 * boxSize) - (boxSize >> 1),
-				// 		y1: (7 * boxSize) - (boxSize >> 1),
-				// 		x2: (5 * boxSize) - (boxSize >> 1),
-				// 		y2: (5 * boxSize) - (boxSize >> 1),
-				// 	};
+				let boxSize = parseInt(Self.els.content.cssProp("--box-size"), 10),
+					halfBs = boxSize >> 1,
+					[fF, fR] = event.from.split(""),
+					[tF, tR] = event.to.split(""),
+					fX = files.indexOf(fF) + 1,
+					tX = files.indexOf(tF) + 1,
+					fY = 8 - (+fR - 1),
+					tY = 8 - (+tR - 1),
+					data = {
+						x1: (fX * boxSize) - halfBs,
+						y1: (fY * boxSize) - halfBs,
+						x2: (tX * boxSize) - halfBs,
+						y2: (tY * boxSize) - halfBs,
+					};
 
-				// Self.els.movement.find("line").attr(data);
+				let x = data.x1 - data.x2,
+					y = data.y1 - data.y2,
+					len = Math.sqrt(x * x + y * y) - halfBs;
+
+				console.log( len );
+
+				data.y2 = 390;
+				// data.x2 = 100;
+
+				// update SVG element
+				Self.els.movement.find("line").attr(data);
+				// clean up board UI
+				Self.els.content.find(`.board .active`).removeClass("active");
+				Self.els.content.find(`.move-from-pos`).remove();
 				break;
 			case "output-fen-string":
 				console.log(game.fen());
