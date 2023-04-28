@@ -341,6 +341,9 @@ const chess = {
 			case "output-game-pgn":
 				console.log( game.pgn() );
 				break;
+			case "engine-interface":
+				karaqu.shell("fs -u '~/help/engine-interface.md'");
+				break;
 			default:
 				if (event.el) {
 					// proxy event

@@ -163,14 +163,21 @@
 				// clear ghost board
 				Self.els.ghost.html("");
 
-				Self.dispatch({ type: "after-move" });
+				APP.dispatch({ type: "after-move" });
 				break;
 		}
 	},
 	addEntry(move) {
 		if (!move.from && !move.to) return;
+
 		// push move to history
 		this.history.push(move);
+
+		// delete discarded elements
+		let len = this.history.length-1;
+		this.els.history.find(".move").map((e, i) => {
+			if (i >= len) e.parentNode.removeChild(e);
+		});
 
 		// update move history list
 		this.els.history
