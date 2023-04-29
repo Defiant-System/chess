@@ -464,24 +464,38 @@ content {
 			font-size: 15px;
 			line-height: 1.2;
 			text-align: center;
+			transition: width 150ms ease-in-out,
+						height 150ms ease-in-out;
 
 			&[data-show="main-menu"] {
 				width: 320px;
 				height: 179px;
 
-				.main-menu { display: block; }
+				.main-menu {
+					opacity: 1;
+					max-height: 500px;
+					padding-bottom: 11px;
+				}
+
 				i.icon-go-back { display: none; }
 			}
 
 			&[data-show="cpu-menu"] {
 				width: 240px;
-				height: 132px;
+				height: 139px;
 				
-				.cpu-menu { display: block; }
+				.cpu-menu {
+					opacity: 1;
+					max-height: 500px;
+					padding-bottom: 11px;
+				}
 			}
 
 			> div {
-				display: none;
+				opacity: 0;
+				max-height: 0;
+				overflow: hidden;
+				transition: opacity 150ms ease-in-out 200ms;
 			}
 
 			i.icon-go-back {
@@ -512,6 +526,8 @@ content {
 			}
 
 			.opt-opponents {
+				white-space: nowrap;
+
 				> div {
 					display: inline-block;
 					position: relative;
