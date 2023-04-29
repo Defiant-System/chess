@@ -28,11 +28,12 @@ Nxd4 17. Nxd4 Ba4 18. Bb3 Bxb3 19. Nxb3 Rxd1+ 20. Rxd1 Rc8
 
 let Test = {
 	init() {
-		setTimeout(() => chess.els.content.find(`.opt-opponents .icon-cpu`).trigger("click"), 200);
-		
-		return;
-		setTimeout(() => chess.els.content.find(`.opt-opponents .icon-user`).trigger("click"), 200);
-		return setTimeout(this.gameFromPgn, 300);
+		setTimeout(() => chess.els.content.find(`.opt-opponents .icon-cpu`).trigger("click"), 100);
+		setTimeout(() => chess.els.content.find(`.opt-difficulty span:nth-child(2)`).trigger("click"), 150);
+
+		// return;
+		// setTimeout(() => chess.els.content.find(`.opt-opponents .icon-user`).trigger("click"), 200);
+		// return setTimeout(this.gameFromPgn, 300);
 
 		setTimeout(() => {
 			// chess.els.content.find(`.pos-b2`).trigger("click");
