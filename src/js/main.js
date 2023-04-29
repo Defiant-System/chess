@@ -97,6 +97,10 @@ const chess = {
 				orientation = Self.els.chess.data("orientation");
 				// set opponent
 				Self.opponent = event.opponent;
+				// reset history list
+				Self.history.dispatch({ type: "reset-history-list" });
+				// hide movement line
+				Self.els.movement.removeClass("show");
 
 				if (orientation === "black") {
 					files = files.split("").reverse().join("");
@@ -139,10 +143,8 @@ const chess = {
 				Self.els.content.find(`.dialog.new-game`).data({ show: "cpu-menu" });
 				break;
 			case "set-cpu-skill":
-				// event.el.find(".active").removeClass("active");
-				// el = $(event.target).addClass("active");
 				// set AI skill
-				Self.skill = +el.html();
+				Self.skill = +$(event.target).html();
 				// start new game against cpu
 				Self.dispatch({ type: "load-fen-game", opponent: "AI" });
 

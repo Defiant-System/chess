@@ -13,8 +13,6 @@
 			hBtnNext: window.find("[data-click='history-go-next']"),
 			hBtnEnd: window.find("[data-click='history-go-end']"),
 		};
-		// create history stack
-		this.history = new window.History;
 	},
 	dispatch(event) {
 		let APP = chess,
@@ -24,7 +22,14 @@
 			board,
 			htm,
 			el;
+		// console.log(event);
 		switch (event.type) {
+			case "reset-history-list":
+				// clear HTML
+				Self.els.history.html("");
+				// create history stack
+				Self.history = new window.History;
+				break;
 			case "render-history-list":
 				htm = Self.history.stack.map(entry => {
 					let piece = entry.piece;
@@ -184,9 +189,10 @@
 
 		// update move history list
 		this.els.history
-			.append(`<span class="move"><piece class="${COLORS[move.color]}-${PIECES[move.piece]}"></piece>${move.to}</span>`)
-			.scrollTop(1e5);
+			.append(`<span class="move"><piece class="${COLORS[move.color]}-${PIECES[move.piece]}"></piece>${move.to}</span>`);
 		
+		this.els.history.find(".move:last").scrollIntoView();
+
 		this.dispatch({ type: "update-history-list" });
 	}
 }
