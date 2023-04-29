@@ -136,7 +136,18 @@ const chess = {
 				Self.els.chess.removeClass("show-game-over").addClass("show-new-game");
 				break;
 			case "new-vs-cpu":
+				Self.els.content.find(`.dialog.new-game`).data({ show: "cpu-menu" });
+				break;
+			case "set-cpu-skill":
+				event.el.find(".active").removeClass("active");
+				el = $(event.target).addClass("active");
+				// set AI skill
+				Self.skill = +el.html();
+				// start new game against cpu
 				Self.dispatch({ type: "load-fen-game", opponent: "AI" });
+
+				// reset menu
+				Self.els.content.find(`.dialog.new-game`).data({ show: "main-menu" });
 				break;
 			case "new-vs-human":
 				Self.dispatch({ type: "load-fen-game", opponent: "User" });
@@ -375,11 +386,10 @@ const chess = {
 		switch (this.opponent) {
 			case "AI":
 				if (turnColor === "black") {
-					let level = 1,
-						skill = 1,
+					let skill = this.skill || 1,
 						fen = game.fen();
 					// simple ai move
-					AI.makeBestMove({ fen, level, skill, callback: bestMove => {
+					AI.makeBestMove({ fen, skill, callback: bestMove => {
 						let from = bestMove.slice(0, 2),
 							to = bestMove.slice(2),
 							el = this.els.board.find(".pos-"+ from),

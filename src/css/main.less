@@ -460,12 +460,28 @@ content {
 		z-index: 3;
 
 		&.new-game {
-			width: 320px;
-			// height: 130px;
 			padding: 17px 17px 21px;
 			font-size: 15px;
 			line-height: 1.2;
 			text-align: center;
+
+			&[data-show="main-menu"] {
+				width: 320px;
+				height: 179px;
+
+				.main-menu { display: block; }
+			}
+
+			&[data-show="cpu-menu"] {
+				width: 320px;
+				height: 179px;
+				
+				.cpu-menu { display: block; }
+			}
+
+			> div {
+				display: none;
+			}
 
 			.opt-opponents {
 				> div {
@@ -526,6 +542,29 @@ content {
 					&.disabled {
 						opacity: .5;
 						cursor: default;
+					}
+				}
+			}
+
+			.opt-difficulty {
+				margin-top: 17px;
+				font-size: 0;
+
+				> span {
+					background: rgba(0,0,0,.15);
+					border: 2px solid #00000050;
+					padding: 3px 7px;
+					font-size: 19px;
+					font-weight: 700;
+					cursor: pointer;
+
+					&:not(:first-child) { border-left-width: 0; }
+					&:first-child { border-radius: 5px 0 0 5px; }
+					&:last-child { border-radius: 0 5px 5px 0; }
+
+					&.active {
+						background: rgba(0,0,0,.25);
+						color: #ffffffc0;
 					}
 				}
 			}
