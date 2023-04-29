@@ -139,8 +139,8 @@ const chess = {
 				Self.els.content.find(`.dialog.new-game`).data({ show: "cpu-menu" });
 				break;
 			case "set-cpu-skill":
-				event.el.find(".active").removeClass("active");
-				el = $(event.target).addClass("active");
+				// event.el.find(".active").removeClass("active");
+				// el = $(event.target).addClass("active");
 				// set AI skill
 				Self.skill = +el.html();
 				// start new game against cpu
@@ -154,6 +154,10 @@ const chess = {
 				break;
 			case "new-vs-friend":
 				Self.dispatch({ type: "load-fen-game", opponent: "Friend" });
+				break;
+
+			case "menu-go-back":
+				Self.els.content.find(`.dialog.new-game`).data({ show: "main-menu" });
 				break;
 
 			case "focus-piece":
