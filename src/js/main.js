@@ -22,12 +22,8 @@ const PIECES = {
 	k: "king",
 };
 
-let game;
-
-let saved = {
-	"AI-skill": 1,
-	"game-option": "option-possibilities",
-};
+let SAVED = window.settings.getItem("pgn");
+let Game;
 
 
 const chess = {
@@ -43,6 +39,11 @@ const chess = {
 
 		// init sub objects
 		Object.keys(this).filter(i => this[i].init).map(i => this[i].init());
+
+		if (SAVED) {
+			// restore game from save
+			this.dispatch({ type: "game-from-pgn", pgn: SAVED });
+		}
 	},
 	dispatch(event) {
 		let Self = chess,
@@ -62,7 +63,15 @@ const chess = {
 		// console.log(event);
 		switch (event.type) {
 			// system events
-			case "window.init":
+			case "window.close":
+				if (Game) {
+					if (Self.els.chess.hasClass("show-game-over")) {
+						// if "game over", auto-clear saved PGN
+						return window.settings.removeItem("pgn");
+					}
+					let state = `[White "User"]\n[Black "${Self.opponent}:${Self.skill}"]\n\n${Game.pgn()}`;
+					window.settings.setItem("pgn", state);
+				}
 				break;
 			// custom events
 			case "load-fen-game":
@@ -83,7 +92,7 @@ const chess = {
 					.removeClass("show-game-over show-pawn-promotion")
 					.addClass("show-new-game");
 				// reset game object
-				game.reset();
+				Game.reset();
 				break;
 			case "reset-board":
 				Self.els.board.find(".active, .castling-rook").removeClass("active castling-rook");
@@ -105,7 +114,7 @@ const chess = {
 				Self.els.chess.data({ theme });
 				break;
 			case "game-from-fen":
-				game = new Chess(event.fen);
+				Game = new Chess(event.fen);
 				orientation = Self.els.chess.data("orientation");
 				// set opponent
 				Self.opponent = event.opponent;
@@ -120,7 +129,7 @@ const chess = {
 				}
 
 				htm = [];
-				game.board().map((row, y) => {
+				Game.board().map((row, y) => {
 					row.map((square, x) => {
 						if (!square) return;
 						let pos = files.charAt(x) + ranks.charAt(y);
@@ -131,11 +140,18 @@ const chess = {
 				Self.els.board.html(htm.join(""));
 				break;
 			case "game-from-pgn":
-				game = new Chess();
-				game.load_pgn(event.pgn);
-				Self.dispatch({ type: "load-fen-game", opponent: "User", fen: game.fen() });
 				// populate history
-				PGN.parse(event.pgn).moves.map(move => Self.history.addEntry(move));
+				let parsed = PGN.parse(event.pgn),
+					[opponent, skill] = parsed.header.Black.split(":");
+				// set AI skill level
+				Self.skill = skill ? +skill : 1;
+				// get fen value from PGN game
+				Game = new Chess();
+				Game.load_pgn(event.pgn);
+
+				Self.dispatch({ type: "load-fen-game", opponent, fen: Game.fen() });
+				// populate history
+				parsed.moves.map(move => Self.history.addEntry(move));
 				// auto click on last entry
 				Self.history.els.history.find(".move:last").trigger("click");
 				break;
@@ -193,7 +209,7 @@ const chess = {
 				Self.els.board.find(".active").removeClass("active");
 				el.addClass("active");
 
-				moves = game.moves({ square, verbose: true });
+				moves = Game.moves({ square, verbose: true });
 				htm = moves.map(move => `<piece class="can-move pos-${move.to} ${move.captured ? "piece-capture" : ""}"></piece>`);
 				
 				// check if moves enables castling
@@ -255,7 +271,7 @@ const chess = {
 							return Self.els.chess.addClass("show-pawn-promotion");
 						}
 
-						let res = game.move(move);
+						let res = Game.move(move);
 						if (res && res.captured) {
 							let cc = res.color === "w" ? "b" : "w";
 							// remove captured piece
@@ -266,11 +282,11 @@ const chess = {
 					});
 				break;
 			case "after-move":
-				let turnColor = COLORS[game.turn()];
+				let turnColor = COLORS[Game.turn()];
 
 				if (event.from || event.to) {
 					move = event;
-					move.fen = game.fen();
+					move.fen = Game.fen();
 					delete move.type;
 					
 					// push move to history
@@ -283,20 +299,20 @@ const chess = {
 				// reset kings
 				Self.els.board.find(".in-check").removeClass("in-check");
 
-				if (game.in_check()) {
+				if (Game.in_check()) {
 					Self.els.board.find(`.${turnColor}-king`).addClass("in-check");
 				}
-				if (game.in_checkmate()) {
+				if (Game.in_checkmate()) {
 					Self.els.chess.addClass("show-game-over");
 
-					let winner = game.turn() === "b" ? "White" : "Black";
+					let winner = Game.turn() === "b" ? "White" : "Black";
 					return Self.els.content.find(`.dialog.game-over h4`).html(`${winner} wins!`);
 				}
-				if (game.in_draw()) {
+				if (Game.in_draw()) {
 					Self.els.chess.addClass("show-game-over");
 					return Self.els.content.find(`.dialog.game-over h4`).html("Game draw");
 				}
-				if (game.in_stalemate()) {
+				if (Game.in_stalemate()) {
 					Self.els.chess.addClass("show-game-over");
 					return Self.els.content.find(`.dialog.game-over h4`).html("Game drawn by stalemate");
 				}
@@ -323,7 +339,7 @@ const chess = {
 				// hide lightbox
 				Self.els.chess.removeClass("show-pawn-promotion");
 
-				let res = game.move(move);
+				let res = Game.move(move);
 				if (res && res.captured) {
 					let cc = res.color === "w" ? "b" : "w";
 					// remove captured piece
@@ -368,14 +384,14 @@ const chess = {
 				Self.els.content.find(`.move-from-pos`).remove();
 				break;
 			case "output-fen-string":
-				console.log(game.fen());
+				console.log(Game.fen());
 				break;
 			case "output-history-array":
 				console.log(JSON.stringify(Self.history.stack));
-				//console.log( game.history({ verbose: true }) );
+				//console.log( Game.history({ verbose: true }) );
 				break;
 			case "output-game-pgn":
-				console.log( game.pgn() );
+				console.log( Game.pgn() );
 				break;
 			case "engine-interface":
 				karaqu.shell("fs -u '~/help/engine-interface.md'");
@@ -393,7 +409,7 @@ const chess = {
 			case "AI":
 				if (turnColor === "black") {
 					let skill = this.skill || 1,
-						fen = game.fen();
+						fen = Game.fen();
 					// simple ai move
 					AI.makeBestMove({ fen, skill, callback: bestMove => {
 						let from = bestMove.slice(0, 2),
@@ -425,7 +441,7 @@ const chess = {
 	},
 	isCastling(move) {
 		if (move.piece !== "k") return;
-		if (game.turn() === "w" && move.color === "w") {
+		if (Game.turn() === "w" && move.color === "w") {
 			if (move.from === "e1" && move.to === "g1") {
 				return { piece: "r", color: "w", from: "h1", to: "f1" };
 			}
@@ -433,7 +449,7 @@ const chess = {
 				return { piece: "r", color: "w", from: "a1", to: "d1" };
 			}
 		}
-		if (game.turn() === "b" && move.color === "b") {
+		if (Game.turn() === "b" && move.color === "b") {
 			if (move.from === "e8" && move.to === "g8") {
 				return { piece: "r", color: "b", from: "h8", to: "f8" };
 			}
@@ -444,11 +460,11 @@ const chess = {
 	},
 	isPromotion(move) {
 		if (move.piece !== "p") return;
-		let bPromo = game.turn() === "b"
+		let bPromo = Game.turn() === "b"
 					&& move.color === "b"
 					&& move.from.charAt(1) === "2"
 					&& move.to.charAt(1) === "1";
-		let wPromo = game.turn() === "w"
+		let wPromo = Game.turn() === "w"
 					&& move.color === "w"
 					&& move.from.charAt(1) === "7"
 					&& move.to.charAt(1) === "8";

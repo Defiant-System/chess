@@ -33,7 +33,7 @@
 				// create history stack
 				Self.history = new History;
 				// add reseted board as first entry
-				Self.addEntry({ type: "start", fen: game.fen() });
+				Self.addEntry({ type: "start", fen: Game.fen() });
 				// reset toolbar
 				Self.dispatch({ type: "reset-toolbar" });
 				break;
@@ -98,8 +98,8 @@
 					historyItem = Self.history.current,
 					historyEl = Self.els.history.find(".move").get(Self.history.index);
 				//console.log(historyItem);
-				game.load(historyItem.fen);
-				board = game.board();
+				Game.load(historyItem.fen);
+				board = Game.board();
 
 				// history list UI
 				Self.els.history.find(".active").removeClass("active");

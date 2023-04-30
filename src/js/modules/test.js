@@ -1,8 +1,8 @@
 
 let pgn = `[White "User"]
-[Black "AI:2"]
+[Black "AI:1"]
 
-1. e4 e6 2. Nf3 Nc6 3. Bd3 h5 4. O-O g5 5. Bc4 Na5 6. d3 Nxc4 7. dxc4 Be7 8. Nxg5 Bxg5 9. Bxg5 Qxg5`;
+1. e4 d5 2. Nf3 dxe4 3. Ne5 Nc6 4. Nxc6 bxc6 5. d4 Qd5 6. Nc3 Qa5 7. Bd2 Qb4 8. Nxe4 Qxb2 9. Bc3 Qa3 10. Bc4 h5 11. Qf3 f6 12. Ng5 Bd7 13. Nf7 Rh7 14. Ng5 Rh8 15. Bb5 Qd6`;
 // let pgn = `[Event "Reykjavik WCh"]
 // [Site "Reykjavik WCh"]
 // [Date "1972.07.11"]
@@ -32,6 +32,9 @@ let pgn = `[White "User"]
 
 let Test = {
 	init() {
+		// window.settings.setItem("pgn", pgn);
+
+		return;
 		setTimeout(() => chess.els.content.find(`.opt-opponents .icon-cpu`).trigger("click"), 200);
 		return setTimeout(this.gameFromPgn, 300);
 		return;
