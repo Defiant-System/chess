@@ -32,6 +32,8 @@
 				Self.els.history.html("");
 				// create history stack
 				Self.history = new window.History;
+				// add reseted board as first entry
+				// Self.history.push({ type: "start", fen: game.fen() });
 				// reset toolbar
 				Self.dispatch({ type: "reset-toolbar" });
 				break;
@@ -48,8 +50,8 @@
 				Self.els.history.find(".active").removeClass("active");
 				Self.els.history.find(".move").get(Self.history.index).addClass("active");
 
-				Self.els.hBtnStart.toggleClass("disabled_", Self.history.canGoBack);
-				Self.els.hBtnPrev.toggleClass("disabled_", Self.history.canGoBack);
+				Self.els.hBtnStart.toggleClass("disabled_", Self.history.index > -2);
+				Self.els.hBtnPrev.toggleClass("disabled_", Self.history.index > -2);
 				Self.els.hBtnNext.toggleClass("disabled_", Self.history.canGoForward);
 				Self.els.hBtnEnd.toggleClass("disabled_", Self.history.canGoForward);
 				// update toolbar
@@ -66,23 +68,23 @@
 				Self.dispatch({ type: "history-entry-render" });
 				break;
 			case "history-go-prev":
-
-				switch (Self.opponent) {
-					case "AI": break;
-					case "Friend": break;
-					case "User": break;
-				}
+console.log( Self.history );
+				// switch (Self.opponent) {
+				// 	case "AI": break;
+				// 	case "Friend": break;
+				// 	case "User": break;
+				// }
 
 				Self.history.go(Self.history.index - 1);
 				Self.dispatch({ type: "history-entry-render" });
 				break;
 			case "history-go-next":
 
-				switch (Self.opponent) {
-					case "AI": break;
-					case "Friend": break;
-					case "User": break;
-				}
+				// switch (Self.opponent) {
+				// 	case "AI": break;
+				// 	case "Friend": break;
+				// 	case "User": break;
+				// }
 
 				Self.history.go(Self.history.index + 1);
 				Self.dispatch({ type: "history-entry-render" });
