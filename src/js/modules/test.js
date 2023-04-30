@@ -32,8 +32,6 @@ let pgn = `[White "User"]
 
 let Test = {
 	init() {
-		// window.settings.setItem("pgn", pgn);
-
 		return;
 		setTimeout(() => chess.els.content.find(`.opt-opponents .icon-cpu`).trigger("click"), 200);
 		return setTimeout(this.gameFromPgn, 300);
