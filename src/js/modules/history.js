@@ -48,10 +48,10 @@
 				Self.els.history.find(".active").removeClass("active");
 				Self.els.history.find(".move").get(Self.history.index).addClass("active");
 
-				Self.els.hBtnStart.toggleClass("disabled", Self.history.canGoBack);
-				Self.els.hBtnPrev.toggleClass("disabled", Self.history.canGoBack);
-				Self.els.hBtnNext.toggleClass("disabled", Self.history.canGoForward);
-				Self.els.hBtnEnd.toggleClass("disabled", Self.history.canGoForward);
+				Self.els.hBtnStart.toggleClass("disabled_", Self.history.canGoBack);
+				Self.els.hBtnPrev.toggleClass("disabled_", Self.history.canGoBack);
+				Self.els.hBtnNext.toggleClass("disabled_", Self.history.canGoForward);
+				Self.els.hBtnEnd.toggleClass("disabled_", Self.history.canGoForward);
 				// update toolbar
 				Self.dispatch({ type: "update-toolbar" });
 				break;
@@ -83,7 +83,7 @@
 					case "Friend": break;
 					case "User": break;
 				}
-				
+
 				Self.history.go(Self.history.index + 1);
 				Self.dispatch({ type: "history-entry-render" });
 				break;
