@@ -84,6 +84,12 @@ const chess = {
 				Self.els.board.find(".can-move").remove();
 				Self.els.board.removeClass("can-move-squares");
 				break;
+			case "undo-move":
+				Self.history.dispatch({ type: "history-go-prev" });
+				break;
+			case "redo-move":
+				Self.history.dispatch({ type: "history-go-next" });
+				break;
 			case "rotate-board":
 				orientation = Self.els.chess.data("orientation") === "white" ? "black" : "white";
 				Self.els.chess.data({ orientation });

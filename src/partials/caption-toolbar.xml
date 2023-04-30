@@ -1,6 +1,9 @@
 <CaptionToolBar>
 	<Group>
-		<Tool symbol="icon-undo" state="disabled"/>
+		<Options>
+			<Tool symbol="icon-undo" click="undo-move"/>
+			<Tool symbol="icon-redo" click="redo-move"/>
+		</Options>
 		<Tool symbol="icon-rotate" click="rotate-board"/>
 	</Group>
 	<Group>

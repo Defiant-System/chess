@@ -8,6 +8,9 @@
 			board: window.find(".board"),
 			ghost: window.find(".ghost-pieces"),
 			history: window.find(".move-history"),
+			toolUndo: window.find("[data-click='undo-move']"),
+			toolRedo: window.find("[data-click='redo-move']"),
+			toolRotate: window.find("[data-click='rotate-board']"),
 			hBtnStart: window.find("[data-click='history-go-start']"),
 			hBtnPrev: window.find("[data-click='history-go-prev']"),
 			hBtnNext: window.find("[data-click='history-go-next']"),
@@ -29,15 +32,17 @@
 				Self.els.history.html("");
 				// create history stack
 				Self.history = new window.History;
+				// reset toolbar
+				Self.dispatch({ type: "reset-toolbar" });
 				break;
 			case "render-history-list":
 				htm = Self.history.stack.map(entry => {
 					let piece = entry.piece;
 					return `<span class="move"><piece class="${COLORS[entry.color]}-${PIECES[piece]}"></piece>${entry.to}</span>`;
 				});
-				Self.els.history
-					.html(htm.join())
-					.scrollTop(1e5);
+				Self.els.history.html(htm.join());
+				// scroll list to end
+				Self.els.history.find(".move:last").scrollIntoView();
 				break;
 			case "update-history-list":
 				Self.els.history.find(".active").removeClass("active");
@@ -47,6 +52,8 @@
 				Self.els.hBtnPrev.toggleClass("disabled", Self.history.canGoBack);
 				Self.els.hBtnNext.toggleClass("disabled", Self.history.canGoForward);
 				Self.els.hBtnEnd.toggleClass("disabled", Self.history.canGoForward);
+				// update toolbar
+				Self.dispatch({ type: "update-toolbar" });
 				break;
 			case "history-entry-go":
 				el = $(event.target);
@@ -59,10 +66,24 @@
 				Self.dispatch({ type: "history-entry-render" });
 				break;
 			case "history-go-prev":
+
+				switch (Self.opponent) {
+					case "AI": break;
+					case "Friend": break;
+					case "User": break;
+				}
+
 				Self.history.go(Self.history.index - 1);
 				Self.dispatch({ type: "history-entry-render" });
 				break;
 			case "history-go-next":
+
+				switch (Self.opponent) {
+					case "AI": break;
+					case "Friend": break;
+					case "User": break;
+				}
+				
 				Self.history.go(Self.history.index + 1);
 				Self.dispatch({ type: "history-entry-render" });
 				break;
@@ -82,8 +103,9 @@
 				Self.els.history.find(".active").removeClass("active");
 				historyEl.addClass("active");
 
+				// make sure item is in view
 				if (!historyEl.inView(Self.els.history)) {
-					Self.els.history.scrollTop(historyEl.offset().top);
+					historyEl.scrollIntoView();
 				}
 
 				// reset board
@@ -173,6 +195,18 @@
 				// show movement line
 				APP.dispatch({ ...historyItem, type: "show-movement-indicator" });
 				break;
+
+			case "reset-toolbar":
+				// update toolbar buttons
+				Self.els.toolUndo.addClass("tool-disabled_");
+				Self.els.toolRotate.addClass("tool-disabled_");
+				break;
+			case "update-toolbar":
+				// update toolbar buttons
+				Self.els.toolUndo.toggleClass("tool-disabled_", Self.history.index > -1);
+				Self.els.toolRedo.toggleClass("tool-disabled_", Self.history.index < Self.history.stack.length-1);
+				Self.els.toolRotate.toggleClass("tool-disabled_", Self.history.index > -1);
+				break;
 		}
 	},
 	addEntry(move) {
@@ -190,7 +224,7 @@
 		// update move history list
 		this.els.history
 			.append(`<span class="move"><piece class="${COLORS[move.color]}-${PIECES[move.piece]}"></piece>${move.to}</span>`);
-		
+		// scroll list to end
 		this.els.history.find(".move:last").scrollIntoView();
 
 		this.dispatch({ type: "update-history-list" });
