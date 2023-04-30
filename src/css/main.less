@@ -340,7 +340,7 @@ content {
 				cursor: pointer;
 				border-radius: 2px;
 
-				&:nth-child(odd) {
+				&:nth-child(even) {
 					counter-increment: index;
 					margin-left: 1px;
 
@@ -368,6 +368,10 @@ content {
 
 				&.active {
 					background: #9c52b980;
+				}
+
+				&.start {
+					display: none;
 				}
 				
 				piece {

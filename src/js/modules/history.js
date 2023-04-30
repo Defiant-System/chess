@@ -31,9 +31,9 @@
 				// clear HTML
 				Self.els.history.html("");
 				// create history stack
-				Self.history = new window.History;
+				Self.history = new History;
 				// add reseted board as first entry
-				// Self.history.push({ type: "start", fen: game.fen() });
+				Self.addEntry({ type: "start", fen: game.fen() });
 				// reset toolbar
 				Self.dispatch({ type: "reset-toolbar" });
 				break;
@@ -50,8 +50,8 @@
 				Self.els.history.find(".active").removeClass("active");
 				Self.els.history.find(".move").get(Self.history.index).addClass("active");
 
-				Self.els.hBtnStart.toggleClass("disabled_", Self.history.index > -2);
-				Self.els.hBtnPrev.toggleClass("disabled_", Self.history.index > -2);
+				Self.els.hBtnStart.toggleClass("disabled_", Self.history.canGoBack);
+				Self.els.hBtnPrev.toggleClass("disabled_", Self.history.canGoBack);
 				Self.els.hBtnNext.toggleClass("disabled_", Self.history.canGoForward);
 				Self.els.hBtnEnd.toggleClass("disabled_", Self.history.canGoForward);
 				// update toolbar
@@ -68,7 +68,7 @@
 				Self.dispatch({ type: "history-entry-render" });
 				break;
 			case "history-go-prev":
-console.log( Self.history );
+
 				// switch (Self.opponent) {
 				// 	case "AI": break;
 				// 	case "Friend": break;
@@ -191,13 +191,17 @@ console.log( Self.history );
 
 				// clear ghost board
 				Self.els.ghost.html("");
-
+				// dispatch event post-move
 				APP.dispatch({ type: "after-move" });
 
-				// show movement line
-				APP.dispatch({ ...historyItem, type: "show-movement-indicator" });
+				if (historyItem.type === "start") {
+					// hide movement line
+					APP.els.movement.removeClass("show");
+				} else {
+					// show movement line
+					APP.dispatch({ ...historyItem, type: "show-movement-indicator" });
+				}
 				break;
-
 			case "reset-toolbar":
 				// update toolbar buttons
 				Self.els.toolUndo.addClass("tool-disabled_");
@@ -212,23 +216,31 @@ console.log( Self.history );
 		}
 	},
 	addEntry(move) {
-		if (!move.from && !move.to) return;
+		if (move.type === "start") {
+			// push move to history
+			this.history.push(move);
+			// update move history list
+			this.els.history
+				.append(`<span class="move start"></span>`);
+		}
 
-		// push move to history
-		this.history.push(move);
+		if (move.from && move.to) {
+			// push move to history
+			this.history.push(move);
 
-		// delete discarded elements
-		let len = this.history.length-1;
-		this.els.history.find(".move").map((e, i) => {
-			if (i >= len) e.parentNode.removeChild(e);
-		});
+			// delete discarded elements
+			let len = this.history.length-1;
+			this.els.history.find(".move").map((e, i) => {
+				if (i >= len) e.parentNode.removeChild(e);
+			});
 
-		// update move history list
-		this.els.history
-			.append(`<span class="move"><piece class="${COLORS[move.color]}-${PIECES[move.piece]}"></piece>${move.to}</span>`);
-		// scroll list to end
-		this.els.history.find(".move:last").scrollIntoView();
+			// update move history list
+			this.els.history
+				.append(`<span class="move"><piece class="${COLORS[move.color]}-${PIECES[move.piece]}"></piece>${move.to}</span>`);
+			// scroll list to end
+			this.els.history.find(".move:last").scrollIntoView();
 
-		this.dispatch({ type: "update-history-list" });
+			this.dispatch({ type: "update-history-list" });
+		}
 	}
 }

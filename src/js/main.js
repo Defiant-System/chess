@@ -1,4 +1,6 @@
 
+@import "./classes/history.js";
+
 @import "./modules/chess.0.10.3.js";
 @import "./modules/chess-ai.js";
 @import "./modules/pgn-parser.js";
