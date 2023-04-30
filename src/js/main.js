@@ -24,6 +24,10 @@ const PIECES = {
 
 let game;
 
+let saved = {
+	"AI-skill": 1,
+	"game-option": "option-possibilities",
+};
 
 
 const chess = {
@@ -126,24 +130,15 @@ const chess = {
 				// update DOM
 				Self.els.board.html(htm.join(""));
 				break;
-
 			case "game-from-pgn":
-				// populate history
-				PGN.parse(event.pgn).moves.map(move => Self.history.addEntry(move));
-				Self.history.dispatch({ type: "render-history-list" });
-
 				game = new Chess();
 				game.load_pgn(event.pgn);
-				Self.dispatch({ type: "game-from-fen", fen: game.fen() });
-
-				if (Self.history.history.current) {
-					item = Self.history.history.current;
-					Self.history.els.board.append(`<piece class="move-from-pos pos-${item.from}"></piece>`);
-					Self.history.els.board.find(`.pos-${item.to}`).addClass("active");
-					Self.history.els.history.find(".move:last").addClass("active");
-				}
+				Self.dispatch({ type: "load-fen-game", opponent: "User", fen: game.fen() });
+				// populate history
+				PGN.parse(event.pgn).moves.map(move => Self.history.addEntry(move));
+				// auto click on last entry
+				Self.history.els.history.find(".move:last").trigger("click");
 				break;
-				
 			case "show-new-game-view":
 				Self.els.chess.removeClass("show-game-over").addClass("show-new-game");
 				break;
@@ -155,7 +150,6 @@ const chess = {
 				Self.skill = +$(event.target).html();
 				// start new game against cpu
 				Self.dispatch({ type: "load-fen-game", opponent: "AI" });
-
 				// reset menu
 				Self.els.content.find(`.dialog.new-game`).data({ show: "main-menu" });
 				break;
@@ -165,11 +159,9 @@ const chess = {
 			case "new-vs-friend":
 				Self.dispatch({ type: "load-fen-game", opponent: "Friend" });
 				break;
-
 			case "menu-go-back":
 				Self.els.content.find(`.dialog.new-game`).data({ show: "main-menu" });
 				break;
-
 			case "focus-piece":
 				el = $(event.target);
 				name = el.prop("className");
