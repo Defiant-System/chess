@@ -22,6 +22,8 @@ const PIECES = {
 	k: "king",
 };
 
+// r4b1r/p1qk2pp/1pp1p3/P2p4/1PPP1n2/3n1b2/3K3p/5B2 b - - 2 30
+
 let SAVED = window.settings.getItem("pgn");
 let Game;
 
