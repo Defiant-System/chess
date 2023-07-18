@@ -144,12 +144,14 @@ const chess = {
 			case "game-from-pgn":
 				// populate history
 				let parsed = PGN.parse(event.pgn),
-					[opponent, skill] = parsed.header.Black.split(":");
+					[opponent, skill] = parsed.header.Black.split(":"),
+					lines = event.pgn.split("\n"),
+					pgn = lines.slice(2).join("\n");
 				// set AI skill level
 				Self.skill = skill ? +skill : 1;
 				// get fen value from PGN game
 				Game = new Chess();
-				Game.load_pgn(event.pgn);
+				Game.load_pgn(pgn);
 
 				Self.dispatch({ type: "load-fen-game", opponent, fen: Game.fen() });
 				// populate history
